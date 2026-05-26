@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprinto · Q2 2026 Forecast</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0A0C10;--ink3:#6B7280;--ink4:#9CA3AF;
+  --surface:#FFFFFF;--surface2:#F8F9FB;--surface3:#F1F3F6;
+  --green:#166534;--green-mid:#16A34A;--green-light:#DCFCE7;--green-bg:#F0FDF4;
+  --amber:#92400E;--amber-mid:#D97706;--amber-bg:#FFFBEB;--amber-light:#FEF3C7;
+  --red:#991B1B;--red-bg:#FEF2F2;
+  --blue:#1D4ED8;--blue-bg:#EFF6FF;--blue-light:#DBEAFE;
+  --purple:#6D28D9;--purple-bg:#F5F3FF;--purple-light:#EDE9FE;
+  --warn:#92400E;--warn-bg:#FFFBEB;--warn-border:#FCD34D;
+  --border:#E5E7EB;--border2:#D1D5DB;--radius:8px;--radius-lg:12px;
+}
+html,body{min-height:100vh;background:#F3F4F6;font-family:'Inter',sans-serif;color:var(--ink)}
+.page{max-width:820px;margin:0 auto;padding:2rem 1.5rem 4rem}
+
+/* MASTHEAD */
+.masthead{margin-bottom:2rem}
+.mast-eyebrow{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:.5rem}
+.mast-title{font-family:'Inter',sans-serif;font-size:32px;font-weight:800;color:var(--ink);line-height:1;letter-spacing:-.2px}
+.mast-title span{color:var(--green-mid)}
+.mast-sub{font-size:13px;color:var(--ink3);margin-top:.5rem}
+
+/* TABS */
+.tabs{display:flex;gap:2px;background:var(--surface3);border-radius:var(--radius-lg);padding:3px;margin-bottom:1.75rem;border:1px solid var(--border)}
+.tab{flex:1;padding:.5rem .75rem;border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;text-align:center;cursor:pointer;border:none;background:transparent;color:var(--ink3);transition:all .15s;line-height:1.3}
+.tab:hover{color:var(--ink);background:rgba(255,255,255,.5)}
+.tab.active{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1),0 0 0 1px rgba(0,0,0,.05)}
+.tab-date{display:block;font-family:'DM Mono',monospace;font-size:10px;font-weight:400;color:var(--ink4);margin-top:2px}
+.tab.active .tab-date{color:var(--ink3)}
+
+/* PANELS */
+.week-panel{display:none}
+.week-panel.active{display:block;animation:fadeIn .18s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+
+/* KPI ROW */
+.kpi-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:1.25rem}
+.kpi{background:var(--surface);border-radius:var(--radius-lg);padding:.875rem 1rem;border:1px solid var(--border)}
+.kl{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:5px}
+.kv{font-family:'Inter',sans-serif;font-size:22px;font-weight:700;color:var(--ink);line-height:1}
+.kv.g{color:var(--green)}.kv.a{color:var(--amber)}.kv.b{color:var(--blue)}
+.ks{font-size:11px;color:var(--ink3);margin-top:4px}
+.kd{font-family:'DM Mono',monospace;font-size:10px;font-weight:600;margin-top:3px}
+.kd.up{color:var(--green-mid)}.kd.dn{color:var(--red)}
+
+/* WOW STRIP */
+.wow{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:.875rem 1rem;margin-bottom:1.25rem}
+.wow-title{font-family:'DM Mono',monospace;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:.625rem}
+.wow-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.wi{padding:.375rem .625rem;border-radius:6px;font-size:11px;line-height:1.5}
+.wi-g{background:var(--green-bg);border:1px solid #BBF7D0}
+.wi-r{background:var(--red-bg);border:1px solid #FECACA}
+.wi-a{background:var(--warn-bg);border:1px solid var(--warn-border)}
+.wi strong{font-weight:600}
+.wi-g strong{color:var(--green)}.wi-r strong{color:var(--red)}.wi-a strong{color:var(--warn)}
+.wi span{color:var(--ink3)}
+
+/* SECTION TITLE */
+.section-title{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);margin:1.5rem 0 .625rem}
+
+/* SCENARIOS */
+.scenarios{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem}
+.sc{border-radius:var(--radius-lg);border:1px solid var(--border);overflow:hidden;background:var(--surface)}
+.sc-head{padding:.875rem 1rem;border-bottom:1px solid var(--border)}
+.sc-head.best{background:var(--green-bg)}
+.sc-head.worst{background:var(--amber-bg)}
+.sc-lbl{font-family:'DM Mono',monospace;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.sc-head.best .sc-lbl{color:var(--green)}
+.sc-head.worst .sc-lbl{color:var(--amber)}
+.sc-tot{font-family:'Inter',sans-serif;font-size:22px;font-weight:800}
+.sc-head.best .sc-tot{color:var(--green)}
+.sc-head.worst .sc-tot{color:var(--amber)}
+.sc-sub{font-size:11px;color:var(--ink3);margin-top:3px}
+.sc-sec{padding:.3rem 1rem .2rem;background:var(--surface3);font-family:'DM Mono',monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3)}
+.sc-sec.q1{background:var(--purple-light);color:var(--purple)}
+.sc-deal{padding:.425rem 1rem;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start}
+.sc-deal:last-child{border-bottom:none}
+.sc-deal.q1{background:var(--purple-bg)}
+.sd-n{font-size:12px;font-weight:500;color:var(--ink);line-height:1.35}
+.sd-m{font-size:10px;color:var(--ink3);margin-top:2px}
+.sd-a{font-family:'DM Mono',monospace;font-size:12px;font-weight:700;white-space:nowrap;padding-top:1px}
+.sd-a.g{color:var(--green)}.sd-a.a{color:var(--amber)}.sd-a.p{color:var(--purple)}
+.sd-drop{font-size:11px;color:var(--red);font-weight:600}
+.sc-foot{padding:.625rem 1rem;background:var(--surface3);border-top:1px solid var(--border);display:flex;justify-content:space-between;font-family:'Inter',sans-serif;font-size:12px;font-weight:700}
+
+/* REP CARDS */
+.rep-grid{margin-bottom:1.5rem;display:flex;flex-direction:column;gap:8px}
+.rep-card{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;background:var(--surface)}
+.rep-head{display:grid;grid-template-columns:1fr auto;align-items:center;padding:.625rem 1rem;background:var(--surface2);border-bottom:1px solid var(--border)}
+.rn{font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--ink)}
+.rq{font-size:11px;color:var(--ink3);margin-top:2px}
+.ra{text-align:right}
+.rb{font-size:12px;font-weight:600}
+.rw{font-size:11px;color:var(--ink3);margin-top:1px}
+.rep-bar{padding:.5rem 1rem .625rem;background:var(--surface);border-bottom:1px solid var(--border)}
+.bt{background:var(--surface3);border-radius:3px;height:5px;position:relative;margin-bottom:4px}
+.bb{height:5px;border-radius:3px;background:var(--green-mid);position:absolute;top:0;left:0}
+.bw{height:5px;border-radius:3px;background:var(--amber-mid);position:absolute;top:0;left:0}
+.bq{position:absolute;top:-4px;width:1.5px;background:var(--ink);height:13px;border-radius:1px}
+.bl{display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3)}
+.dr{padding:.4rem 1rem;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start}
+.dr:last-child{border-bottom:none}
+.dr.q1{background:var(--purple-bg)}
+.dr.warn{background:var(--warn-bg)}
+.dn{font-size:11px;font-weight:500;color:var(--ink);line-height:1.35}
+.dm{font-size:10px;color:var(--ink3);margin-top:2px}
+.da{font-family:'DM Mono',monospace;font-size:11px;font-weight:700;white-space:nowrap;padding-top:1px}
+.da.g{color:var(--green)}.da.a{color:var(--amber)}
+.da.d{font-family:'Inter',sans-serif;font-size:11px;font-weight:400;color:var(--ink4)}
+.da.cw{color:var(--blue)}.da.p{color:var(--purple)}
+.ds{padding:.25rem 1rem;background:var(--surface2);font-family:'DM Mono',monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);border-bottom:1px solid var(--border)}
+.ds.q1{background:var(--purple-light);color:var(--purple)}
+
+/* PILLS */
+.pill{display:inline-block;font-family:'DM Mono',monospace;font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;margin-left:5px;vertical-align:middle;text-transform:uppercase;letter-spacing:.04em}
+.pg{background:var(--green-light);color:var(--green)}
+.pa{background:var(--amber-light);color:var(--amber)}
+.pb{background:var(--blue-light);color:var(--blue)}
+.pcw{background:#D1FAE5;color:#065F46}
+.pw{background:var(--warn-bg);color:var(--warn)}
+.pp{background:var(--purple-light);color:var(--purple)}
+
+/* GAP TABLE */
+.gap-card{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1.5rem;background:var(--surface)}
+.gap-head{padding:.625rem 1rem;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.gap-ht{font-family:'Inter',sans-serif;font-size:12px;font-weight:700;color:var(--ink)}
+.gap-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3)}
+.gap-row{display:grid;grid-template-columns:80px 1fr 64px;gap:10px;padding:.425rem 1rem;border-bottom:1px solid var(--border);font-size:11px;align-items:start}
+.gap-row:last-child{border-bottom:none;border-top:1px solid var(--border2);background:var(--surface2);font-weight:600}
+.gr{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;color:var(--ink)}
+.gd{color:var(--ink3);line-height:1.5}
+.gn{font-family:'DM Mono',monospace;font-size:11px;font-weight:700;white-space:nowrap;text-align:right}
+.gn.g{color:var(--green)}.gn.r{color:var(--red)}
+
+/* ACTIONS */
+.action-card{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:1.5rem;background:var(--surface)}
+.action-head{padding:.625rem 1rem;background:var(--surface2);border-bottom:1px solid var(--border)}
+.action-ht{font-family:'Inter',sans-serif;font-size:12px;font-weight:700;color:var(--ink)}
+.ac{display:grid;grid-template-columns:22px 1fr;gap:8px;padding:.4rem 1rem;border-bottom:1px solid var(--border);font-size:11px;align-items:start}
+.ac:last-child{border-bottom:none}
+.ac-n{font-family:'DM Mono',monospace;font-size:10px;font-weight:600;color:var(--ink4);padding-top:1px}
+.ac-t{color:var(--ink);line-height:1.55}
+.ac-t strong{font-weight:600}
+.ac-t span{color:var(--ink3)}
+
+/* VARUN NOTE */
+.varun{background:var(--blue-bg);border:1px solid var(--blue-light);border-radius:var(--radius-lg);padding:.75rem 1rem;margin-bottom:1.25rem;font-size:11px;color:var(--blue);line-height:1.6}
+.varun strong{font-weight:700}
+
+/* PLACEHOLDER */
+.placeholder{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:3.5rem 2rem;text-align:center}
+.ph-title{font-family:'Inter',sans-serif;font-size:16px;font-weight:700;color:var(--ink);margin-bottom:.5rem}
+.ph-sub{font-size:13px;color:var(--ink3)}
+
+/* FOOTER */
+.dash-footer{padding-top:1.25rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:10px;color:var(--ink4)}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .kpi-row{grid-template-columns:1fr 1fr}
+  .scenarios{grid-template-columns:1fr}
+  .wow-grid{grid-template-columns:1fr}
+  .gap-row{grid-template-columns:70px 1fr 56px}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="masthead">
+  <div class="mast-eyebrow">Sprinto · New Business Sales</div>
+  <div class="mast-title">Q2 2026 <span>Forecast</span></div>
+  <div class="mast-sub">LSMB · Commercial · Mid Market · All segments &nbsp;·&nbsp; Q2: May 1 – Jul 31</div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showWeek('w1',this)">Week 1<span class="tab-date">May 5</span></button>
+  <button class="tab" onclick="showWeek('w2',this)">Week 2<span class="tab-date">May 12</span></button>
+  <button class="tab" onclick="showWeek('w3',this)">Week 3<span class="tab-date">May 19</span></button>
+  <button class="tab" onclick="showWeek('w4',this)">Week 4<span class="tab-date">May 26</span></button>
+  <button class="tab" onclick="showWeek('w5',this)">Week 5<span class="tab-date">Jun 2</span></button>
+  <button class="tab" onclick="showWeek('dr',this)">Deal Reviews<span class="tab-date">May 8–20</span></button>
+</div>
+
+<!-- ═══ WEEK 1 — MAY 5 ═══ -->
+<div id="w1" class="week-panel active">
+  <div class="kpi-row">
+    <div class="kpi"><div class="kl">Team quota</div><div class="kv">$524K</div><div class="ks">5 active reps · Varun joining</div></div>
+    <div class="kpi"><div class="kl">Closed won (QTD)</div><div class="kv b">$19,288</div><div class="ks">3 deals — OliveCrypto, Solvigo, DeviceNexus</div></div>
+    <div class="kpi"><div class="kl">Best case</div><div class="kv g">$222K</div><div class="ks">42% attainment · 11 deals</div></div>
+    <div class="kpi"><div class="kl">Worst case</div><div class="kv a">$66K</div><div class="ks">13% attainment · confirmed only</div></div>
+  </div>
+
+  <div class="section-title" style="margin-top:0">Scenario view</div>
+  <div class="scenarios">
+    <div class="sc">
+      <div class="sc-head best"><div class="sc-lbl">Best case</div><div class="sc-tot">$222,000</div><div class="sc-sub">42% attainment · all possibles land</div></div>
+      <div class="sc-sec">Already closed</div>
+      <div class="sc-deal"><div><div class="sd-n">OliveCrypto · Solvigo · DeviceNexus</div><div class="sd-m">Monika · Amit · Sanket</div></div><div><div class="sd-a g">$19,288</div></div></div>
+      <div class="sc-sec">High confidence</div>
+      <div class="sc-deal"><div><div class="sd-n">Consumer Direct</div><div class="sd-m">Sanket · Large SMB · DV1 · May 31</div></div><div><div class="sd-a">$40,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Coinspaid</div><div class="sd-m">Amit · Large SMB · S2 · May 31</div></div><div><div class="sd-a">$20,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">PMC Commerce</div><div class="sd-m">Monika · Commercial · S1 · May 23</div></div><div><div class="sd-a">$20,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">CapCenter</div><div class="sd-m">Sanket · Large SMB · DV1 · May 31</div></div><div><div class="sd-a">$20,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Oleeo</div><div class="sd-m">Monika · Large SMB · S2 · May 29</div></div><div><div class="sd-a">$17,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">JEX Technologies</div><div class="sd-m">Sanket · SMB · D1 · May 31</div></div><div><div class="sd-a">$15,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Kallidus</div><div class="sd-m">Aravind · Large SMB · S1 · May 31</div></div><div><div class="sd-a">$15,000</div></div></div>
+      <div class="sc-sec">Possible</div>
+      <div class="sc-deal"><div><div class="sd-n">m3connect · Beehive · Genesis · BKV</div><div class="sd-m">Aditya · Large SMB · VQ1</div></div><div><div class="sd-a a">$41,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Optym</div><div class="sd-m">Aravind · Commercial · N2 · May 31</div></div><div><div class="sd-a a">$10,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">OliveCrypto (Monika) · EKCS</div><div class="sd-m">S2 / S6 stage</div></div><div><div class="sd-a a">$15,000</div></div></div>
+      <div class="sc-foot"><span>Best case total</span><span style="color:var(--green)">~$222,000</span></div>
+    </div>
+    <div class="sc">
+      <div class="sc-head worst"><div class="sc-lbl">Worst case</div><div class="sc-tot">$66,000</div><div class="sc-sub">13% attainment · high confidence only</div></div>
+      <div class="sc-sec">Already closed</div>
+      <div class="sc-deal"><div><div class="sd-n">OliveCrypto · Solvigo · DeviceNexus</div><div class="sd-m">3 deals · May 2026</div></div><div><div class="sd-a g">$19,288</div></div></div>
+      <div class="sc-sec">Survives</div>
+      <div class="sc-deal"><div><div class="sd-n">PMC Commerce</div><div class="sd-m">Monika · S1 · decision this week</div></div><div><div class="sd-a">$20,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Oleeo</div><div class="sd-m">Monika · S2 · contract out</div></div><div><div class="sd-a">$17,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Optym</div><div class="sd-m">Aravind · N2 pricing · May 31</div></div><div><div class="sd-a">$10,000</div></div></div>
+      <div class="sc-sec">Falls away</div>
+      <div class="sc-deal"><div><div class="sd-n">JEX · Consumer Direct · CapCenter · Centura</div><div class="sd-m">Sanket — amounts not yet confirmed</div></div><div><div class="sd-drop">unconfirmed</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Coinspaid · Papirfly</div><div class="sd-m">Amit — revised commercial still pending</div></div><div><div class="sd-drop">amount unconfirmed</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Kallidus · Kissflow · YesMadam</div><div class="sd-m">Aravind — S1/DV1, too early</div></div><div><div class="sd-drop">early stage</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">All Aditya VQ1 deals</div><div class="sd-m">No confirmed amounts</div></div><div><div class="sd-drop">unconfirmed</div></div></div>
+      <div class="sc-foot"><span>Worst case total</span><span style="color:var(--amber)">~$66,000</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Rep-level forecast</div>
+  <div class="rep-grid">
+    <div class="rep-card">
+      <div class="rep-head"><div><div class="rn">Monika Solanki</div><div class="rq">$84K quota</div></div><div class="ra"><div class="rb" style="color:var(--green)">Best $52K · Worst $44K</div><div class="rw">62% best · 52% worst</div></div></div>
+      <div class="rep-bar"><div class="bt"><div class="bb" style="width:62%"></div><div class="bq" style="left:100%"></div></div><div class="bt"><div class="bw" style="width:52%"></div><div class="bq" style="left:100%"></div></div><div class="bl"><span>$0</span><span>Quota $84K</span></div></div>
+      <div class="ds">Closed won — Q2</div>
+      <div class="dr"><div><div class="dn">OliveCrypto <span class="pill pcw">closed</span></div><div class="dm">May 8</div></div><div><div class="da cw">$7,588</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">PMC Commerce <span class="pill pg">S1 — decision this week</span></div><div class="dm">Commercial · May 23</div></div><div><div class="da g">$20,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Oleeo <span class="pill pg">S2 — contract out</span></div><div class="dm">Large SMB · May 29</div></div><div><div class="da g">$17,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">PAIX · Cowrks · aicerts <span class="pill pa">S1</span></div><div class="dm">Mid Market / Commercial · Jun–Jul</div></div><div><div class="da a">$35,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">EKCS <span class="pill pa">S6 vendor of choice</span></div><div class="dm">SMB · May 15</div></div><div><div class="da a">$5,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Digitap · Hamat · Technosoft</div><div class="dm">DV1 · Jun–Jul</div></div><div><div class="da d">$33K pipeline</div></div></div>
+    </div>
+    <div class="rep-card">
+      <div class="rep-head"><div><div class="rn">Sanket Shah</div><div class="rq">$120K quota</div></div><div class="ra"><div class="rb" style="color:var(--green)">Best $95K · Worst $0</div><div class="rw">79% best · 0% worst</div></div></div>
+      <div class="rep-bar"><div class="bt"><div class="bb" style="width:79%"></div><div class="bq" style="left:100%"></div></div><div class="bt"><div class="bw" style="width:0%"></div><div class="bq" style="left:100%"></div></div><div class="bl"><span>$0</span><span>Quota $120K</span></div></div>
+      <div class="ds">Closed won — Q2</div>
+      <div class="dr"><div><div class="dn">DeviceNexus.ai <span class="pill pcw">closed</span></div><div class="dm">May 5</div></div><div><div class="da cw">$6,200</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Consumer Direct <span class="pill pa">DV1 · COO meeting May 12</span></div><div class="dm">Large SMB · May 31</div></div><div><div class="da a">$40,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">JEX Technologies <span class="pill pa">legal review May 4</span></div><div class="dm">SMB · D1 · May 31</div></div><div><div class="da a">$35,400</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">CapCenter <span class="pill pa">follow-up this week</span></div><div class="dm">Large SMB · DV1 · May 31</div></div><div><div class="da a">$20,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Tilt · MillerZell</div><div class="dm">D1 · May 31</div></div><div><div class="da d">watching</div></div></div>
+    </div>
+    <div class="rep-card">
+      <div class="rep-head"><div><div class="rn">Aravind Bharathi</div><div class="rq">$84K quota</div></div><div class="ra"><div class="rb" style="color:var(--green)">Best $50K · Worst $25K</div><div class="rw">60% best · 30% worst</div></div></div>
+      <div class="rep-bar"><div class="bt"><div class="bb" style="width:60%"></div><div class="bq" style="left:100%"></div></div><div class="bt"><div class="bw" style="width:30%"></div><div class="bq" style="left:100%"></div></div><div class="bl"><span>$0</span><span>Quota $84K</span></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Kallidus <span class="pill pa">S1 — scoping in progress</span></div><div class="dm">Large SMB · May 31</div></div><div><div class="da a">$15,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Kissflow <span class="pill pa">DV1</span></div><div class="dm">Mid Market · May 31</div></div><div><div class="da a">$15,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Optym <span class="pill pg">N2 pricing</span></div><div class="dm">Commercial · May 31</div></div><div><div class="da g">$10,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">YesMadam <span class="pill pa">V3 custom demo</span></div><div class="dm">Mid Market · Jun 1</div></div><div><div class="da a">$10,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Quantum MF · ibisworld · Money View</div><div class="dm">D1/DV1 · Jun–Jul</div></div><div><div class="da d">$36K pipeline</div></div></div>
+    </div>
+    <div class="rep-card">
+      <div class="rep-head"><div><div class="rn">Aditya Kank</div><div class="rq">$108K quota</div></div><div class="ra"><div class="rb" style="color:var(--amber)">Best $52K · Worst $0</div><div class="rw">48% best · 0% worst</div></div></div>
+      <div class="rep-bar"><div class="bt"><div class="bb" style="width:48%"></div><div class="bq" style="left:100%"></div></div><div class="bt"><div class="bw" style="width:0%"></div><div class="bq" style="left:100%"></div></div><div class="bl"><span>$0</span><span>Quota $108K</span></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">m3connect <span class="pill pa">VQ1 · offer sent</span></div><div class="dm">Large SMB · May 31</div></div><div><div class="da a">$12,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Genesis RG <span class="pill pa">VQ1</span></div><div class="dm">Large SMB · Jun 18</div></div><div><div class="da a">$11,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">BKV Vibro <span class="pill pa">VQ1</span></div><div class="dm">Large SMB · May 29</div></div><div><div class="da a">$10,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Beehive <span class="pill pa">VQ1 · Vanta competing</span></div><div class="dm">Large SMB · Jun 30</div></div><div><div class="da a">$9,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Nala Money <span class="pill pa">VQ1</span></div><div class="dm">Commercial · Jun 4</div></div><div><div class="da a">$9,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Hubject · Eres Group · others</div><div class="dm">DV1/DVQ1 · various</div></div><div><div class="da d">$80K pipeline</div></div></div>
+    </div>
+    <div class="rep-card">
+      <div class="rep-head"><div><div class="rn">Amit Borges</div><div class="rq">$108K quota</div></div><div class="ra"><div class="rb" style="color:var(--amber)">Best $37K · Worst $28K</div><div class="rw">34% best · 26% worst</div></div></div>
+      <div class="rep-bar"><div class="bt"><div class="bb" style="width:34%"></div><div class="bq" style="left:100%"></div></div><div class="bt"><div class="bw" style="width:26%"></div><div class="bq" style="left:100%"></div></div><div class="bl"><span>$0</span><span>Quota $108K</span></div></div>
+      <div class="ds">Closed won — Q2</div>
+      <div class="dr"><div><div class="dn">Solvigo.ai <span class="pill pcw">closed</span></div><div class="dm">May 4</div></div><div><div class="da cw">$5,500</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Papirfly <span class="pill pg">N1 negotiating</span></div><div class="dm">Commercial · N1 · May 31</div></div><div><div class="da g">$16,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Coinspaid <span class="pill pg">S2 · POC complete</span></div><div class="dm">Large SMB · May 31 · revised commercial pending</div></div><div><div class="da g">$14,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Banfico</div><div class="dm">Large SMB · DVQ1 · Jun 30</div></div><div><div class="da a">$14,000</div></div></div>
+    </div>
+  </div>
+
+  <div class="varun"><strong>Varun Sharma</strong> — joining May 11. $20K Q2 quota activates from start date. No pipeline expected this quarter.</div>
+
+  <div class="gap-card">
+    <div class="gap-head"><div class="gap-ht">Gaps to quota — best case</div><div class="gap-sub">Quota: $524K</div></div>
+    <div class="gap-row"><div class="gr">Monika</div><div class="gd">$52K best case. Three high-confidence May closes. PAIX, Cowrks, aicerts next tier.</div><div class="gn g">-$32K</div></div>
+    <div class="gap-row"><div class="gr">Sanket</div><div class="gd">$95K best case. Consumer Direct ($40K) and JEX ($35.4K) are the swing deals. Both need confirmation.</div><div class="gn g">-$25K</div></div>
+    <div class="gap-row"><div class="gr">Aravind</div><div class="gd">$50K best case. Optym and Kallidus anchored. Kissflow and YesMadam are upside.</div><div class="gn r">-$34K</div></div>
+    <div class="gap-row"><div class="gr">Aditya</div><div class="gd">$52K best case across 5 VQ1 deals. Zero confirmed. No closed won to date.</div><div class="gn r">-$56K</div></div>
+    <div class="gap-row"><div class="gr">Amit</div><div class="gd">$37K best case. Papirfly + Coinspaid anchor it. Pipeline thin against $108K quota.</div><div class="gn r">-$71K</div></div>
+    <div class="gap-row"><div class="gr">Total</div><div class="gd">$302K gap in best case. Significant new pipeline needed across the quarter.</div><div class="gn r">-$302K</div></div>
+  </div>
+
+  <div class="action-card">
+    <div class="action-head"><div class="action-ht">Actions — week of May 5</div></div>
+    <div class="ac"><div class="ac-n">01</div><div class="ac-t"><strong>Sanket</strong> — confirm JEX legal outcome. <span>Review was May 4 — most time-sensitive item at $35.4K.</span></div></div>
+    <div class="ac"><div class="ac-n">02</div><div class="ac-t"><strong>Monika</strong> — close PMC Commerce by May 23. <span>At S1 — decision from Elliott this week.</span></div></div>
+    <div class="ac"><div class="ac-n">03</div><div class="ac-t"><strong>Amit</strong> — update Coinspaid amount after revised commercial confirmed. <span>HubSpot still shows $14K.</span></div></div>
+    <div class="ac"><div class="ac-n">04</div><div class="ac-t"><strong>Aravind</strong> — progress Kallidus scoping doc. <span>Escalate to Jeremy Benson if Anand unresponsive.</span></div></div>
+    <div class="ac"><div class="ac-n">05</div><div class="ac-t"><strong>Sanket</strong> — confirm Consumer Direct amount with prospect. <span>COO meeting May 12.</span></div></div>
+    <div class="ac"><div class="ac-n">06</div><div class="ac-t"><strong>Amit</strong> — pipeline build discussion needed. <span>No path to $108K quota from current deals.</span></div></div>
+  </div>
+  <div class="dash-footer"><span>Sprinto · Q2 FY26 · New Business Sales</span><span>Best $222K (42%) · Worst $66K (13%) · CW $19,288</span></div>
+</div>
+
+<!-- ═══ WEEK 2 — MAY 12 ═══ -->
+<div id="w2" class="week-panel">
+  <div class="kpi-row">
+    <div class="kpi"><div class="kl">Team quota</div><div class="kv">$544K</div><div class="ks">6 reps · Varun joined May 11</div></div>
+    <div class="kpi"><div class="kl">Closed won (QTD)</div><div class="kv b">$19,288</div><div class="ks">3 deals · no new closes this week</div></div>
+    <div class="kpi"><div class="kl">Best case</div><div class="kv g">$439K</div><div class="ks">81% attainment</div><div class="kd up">↑ from 42% — forecast call adds pipeline</div></div>
+    <div class="kpi"><div class="kl">Worst case</div><div class="kv a">$161K</div><div class="ks">30% attainment</div></div>
+  </div>
+
+  <div class="wow">
+    <div class="wow-title">Week-on-week changes vs May 5</div>
+    <div class="wow-grid">
+      <div class="wi wi-g"><strong>PMC Commerce → S2</strong> · Monika · <span>Contract imminent May 23</span></div>
+      <div class="wi wi-g"><strong>Beehive → N1</strong> · Aditya · <span>Strong stage jump from VQ1</span></div>
+      <div class="wi wi-g"><strong>Nala Money → S1</strong> · Aditya · <span>Progressed from VQ1</span></div>
+      <div class="wi wi-g"><strong>Centura $27K added</strong> · Sanket · <span>Partner deal · EMEA/France</span></div>
+      <div class="wi wi-g"><strong>PAIX, Cowrks, aicerts → S1</strong> · Monika · <span>Three deals progressed together</span></div>
+      <div class="wi wi-g"><strong>Coinspaid confirmed $22K</strong> · Amit · <span>Revised commercial confirmed</span></div>
+      <div class="wi wi-a"><strong>Cevora confirmed dead</strong> · Aditya · <span>$16K removed from forecast</span></div>
+      <div class="wi wi-a"><strong>Varun joined</strong> · <span>$20K quota active · no pipeline yet</span></div>
+    </div>
+  </div>
+
+  <div class="section-title" style="margin-top:0">Scenario view</div>
+  <div class="scenarios">
+    <div class="sc">
+      <div class="sc-head best"><div class="sc-lbl">Best case</div><div class="sc-tot">$439,000</div><div class="sc-sub">81% attainment · all possibles land</div></div>
+      <div class="sc-sec">Already closed</div>
+      <div class="sc-deal"><div><div class="sd-n">OliveCrypto · Solvigo · DeviceNexus</div><div class="sd-m">Monika · Amit · Sanket</div></div><div><div class="sd-a g">$19,288</div></div></div>
+      <div class="sc-sec">High confidence</div>
+      <div class="sc-deal"><div><div class="sd-n">JEX Technologies</div><div class="sd-m">Sanket · SMB · D1 · May 31</div></div><div><div class="sd-a">$35,400</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Coinspaid</div><div class="sd-m">Amit · Large SMB · S2 · May 31</div></div><div><div class="sd-a">$22,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">PMC Commerce</div><div class="sd-m">Monika · Commercial · S2 · May 23</div></div><div><div class="sd-a">$20,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Oleeo</div><div class="sd-m">Monika · Large SMB · S2 · May 29</div></div><div><div class="sd-a">$17,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Papirfly</div><div class="sd-m">Amit · Commercial · N1 · May 31</div></div><div><div class="sd-a">$16,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Kallidus</div><div class="sd-m">Aravind · Large SMB · S1 · May 31</div></div><div><div class="sd-a">$15,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Optym</div><div class="sd-m">Aravind · Commercial · N2 · May 31</div></div><div><div class="sd-a">$10,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Beehive</div><div class="sd-m">Aditya · Large SMB · N1 · May 29</div></div><div><div class="sd-a">$9,000</div></div></div>
+      <div class="sc-sec">Possible</div>
+      <div class="sc-deal"><div><div class="sd-n">Consumer Direct</div><div class="sd-m">Sanket · Large SMB · DV1 · May 31</div></div><div><div class="sd-a a">$40,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">PAIX · Cowrks · aicerts · EKCS</div><div class="sd-m">Monika · S1/S6</div></div><div><div class="sd-a a">$40,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Centura (partner deal)</div><div class="sd-m">Sanket · Commercial · D1 · May 31 · EMEA/France</div></div><div><div class="sd-a a">$27,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">YesMadam · Kissflow</div><div class="sd-m">Aravind · V3/DV1</div></div><div><div class="sd-a a">$25,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">CapCenter</div><div class="sd-m">Sanket · Large SMB · DV1 · May 31</div></div><div><div class="sd-a a">$20,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Nala Money · Genesis · BKV</div><div class="sd-m">Aditya · VQ1/S1</div></div><div><div class="sd-a a">$40,000</div></div></div>
+      <div class="sc-foot"><span>Best case total</span><span style="color:var(--green)">~$439,000</span></div>
+    </div>
+    <div class="sc">
+      <div class="sc-head worst"><div class="sc-lbl">Worst case</div><div class="sc-tot">$130,000</div><div class="sc-sub">24% attainment · high confidence only</div></div>
+      <div class="sc-sec">Already closed</div>
+      <div class="sc-deal"><div><div class="sd-n">OliveCrypto · Solvigo · DeviceNexus</div><div class="sd-m">3 deals</div></div><div><div class="sd-a g">$19,288</div></div></div>
+      <div class="sc-sec">Survives</div>
+      <div class="sc-deal"><div><div class="sd-n">JEX Technologies</div><div class="sd-m">Sanket · D1 · May 31 · legal cleared</div></div><div><div class="sd-a">$35,400</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Coinspaid</div><div class="sd-m">Amit · S2 · $22K confirmed</div></div><div><div class="sd-a">$22,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">PMC Commerce</div><div class="sd-m">Monika · S2 · May 23 · contract out</div></div><div><div class="sd-a">$20,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Oleeo</div><div class="sd-m">Monika · S2 · May 29 · contract out</div></div><div><div class="sd-a">$17,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Optym</div><div class="sd-m">Aravind · N2 pricing · May 31</div></div><div><div class="sd-a">$10,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Beehive</div><div class="sd-m">Aditya · N1 negotiating · May 29</div></div><div><div class="sd-a">$9,000</div></div></div>
+      <div class="sc-sec">Falls away</div>
+      <div class="sc-deal"><div><div class="sd-n">Papirfly · Kallidus</div><div class="sd-m">Amit · Aravind — active negotiation but not confirmed</div></div><div><div class="sd-drop">not confirmed</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Consumer Direct · CapCenter · Centura</div><div class="sd-m">Sanket — amounts not prospect-confirmed</div></div><div><div class="sd-drop">unconfirmed</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">PAIX · Cowrks · aicerts · EKCS</div><div class="sd-m">Monika — S1/S6, Jun–Jul timeline</div></div><div><div class="sd-drop">too early</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Nala Money · Genesis · BKV · m3connect</div><div class="sd-m">Aditya — VQ1, no confirmed amounts</div></div><div><div class="sd-drop">unconfirmed</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">YesMadam · Kissflow</div><div class="sd-m">Aravind — DV1/V3, mid stage</div></div><div><div class="sd-drop">early stage</div></div></div>
+      <div class="sc-foot"><span>Worst case total</span><span style="color:var(--amber)">~$130,000</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Rep-level forecast</div>
+  <div class="rep-grid">
+    <div class="rep-card">
+      <div class="rep-head"><div><div class="rn">Monika Solanki</div><div class="rq">$84K quota</div></div><div class="ra"><div class="rb" style="color:var(--green)">Best $89K · Worst $44K</div><div class="rw">106% best · 52% worst</div></div></div>
+      <div class="rep-bar"><div class="bt"><div class="bb" style="width:100%"></div><div class="bq" style="left:94%"></div></div><div class="bt"><div class="bw" style="width:52%"></div><div class="bq" style="left:94%"></div></div><div class="bl"><span>$0</span><span>Quota $84K</span></div></div>
+      <div class="ds">Closed won — Q2</div>
+      <div class="dr"><div><div class="dn">OliveCrypto <span class="pill pcw">closed</span></div><div class="dm">May 8</div></div><div><div class="da cw">$7,588</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">PMC Commerce <span class="pill pg">S2 — contract imminent</span></div><div class="dm">Commercial · S2 · May 23</div></div><div><div class="da g">$20,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Oleeo <span class="pill pg">S2 — contract out</span></div><div class="dm">Large SMB · S2 · May 29</div></div><div><div class="da g">$17,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">PAIX · Cowrks · aicerts <span class="pill pa">S1 progressed</span></div><div class="dm">Mid Market / Commercial · Jun–Jul</div></div><div><div class="da a">$40,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">EKCS <span class="pill pa">S6 vendor of choice</span></div><div class="dm">SMB · May 15</div></div><div><div class="da a">$5,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Digitap · Hamat · Technosoft</div><div class="dm">DV1 · Jun–Jul</div></div><div><div class="da d">$33K pipeline</div></div></div>
+    </div>
+    <div class="rep-card">
+      <div class="rep-head"><div><div class="rn">Sanket Shah</div><div class="rq">$120K quota</div></div><div class="ra"><div class="rb" style="color:var(--green)">Best $102K · Worst $42K</div><div class="rw">85% best · 35% worst</div></div></div>
+      <div class="rep-bar"><div class="bt"><div class="bb" style="width:85%"></div><div class="bq" style="left:100%"></div></div><div class="bt"><div class="bw" style="width:35%"></div><div class="bq" style="left:100%"></div></div><div class="bl"><span>$0</span><span>Quota $120K</span></div></div>
+      <div class="ds">Closed won — Q2</div>
+      <div class="dr"><div><div class="dn">DeviceNexus.ai <span class="pill pcw">closed</span></div><div class="dm">May 5</div></div><div><div class="da cw">$6,200</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Consumer Direct <span class="pill pa">COO meeting May 12</span></div><div class="dm">Large SMB · DV1 · May 31</div></div><div><div class="da a">$40,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">JEX Technologies <span class="pill pg">legal cleared</span></div><div class="dm">SMB · D1 · May 31</div></div><div><div class="da g">$35,400</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Centura (partner deal) <span class="pill pa">EMEA/France</span></div><div class="dm">Commercial · D1 · May 31</div></div><div><div class="da a">$27,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">CapCenter <span class="pill pa">in progress</span></div><div class="dm">Large SMB · DV1 · May 31</div></div><div><div class="da a">$20,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Tilt</div><div class="dm">Commercial · D1 · May 31</div></div><div><div class="da d">$13,500 · watching</div></div></div>
+    </div>
+    <div class="rep-card">
+      <div class="rep-head"><div><div class="rn">Aravind Bharathi</div><div class="rq">$84K quota</div></div><div class="ra"><div class="rb" style="color:var(--green)">Best $50K · Worst $25K</div><div class="rw">60% best · 30% worst</div></div></div>
+      <div class="rep-bar"><div class="bt"><div class="bb" style="width:60%"></div><div class="bq" style="left:100%"></div></div><div class="bt"><div class="bw" style="width:30%"></div><div class="bq" style="left:100%"></div></div><div class="bl"><span>$0</span><span>Quota $84K</span></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Kallidus <span class="pill pa">S1 — scoping in progress</span></div><div class="dm">Large SMB · May 31</div></div><div><div class="da a">$15,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Kissflow <span class="pill pa">DV1</span></div><div class="dm">Mid Market · May 31</div></div><div><div class="da a">$15,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Optym <span class="pill pg">N2 pricing</span></div><div class="dm">Commercial · May 31</div></div><div><div class="da g">$10,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">YesMadam <span class="pill pa">V3 custom demo</span></div><div class="dm">Mid Market · Jun 1</div></div><div><div class="da a">$10,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Quantum MF · ibisworld · Money View</div><div class="dm">D1/DV1 · Jun–Jul</div></div><div><div class="da d">$36K pipeline</div></div></div>
+    </div>
+    <div class="rep-card">
+      <div class="rep-head"><div><div class="rn">Aditya Kank</div><div class="rq">$108K quota</div></div><div class="ra"><div class="rb" style="color:var(--amber)">Best $62K · Worst $9K</div><div class="rw">57% best · 8% worst</div></div></div>
+      <div class="rep-bar"><div class="bt"><div class="bb" style="width:57%"></div><div class="bq" style="left:100%"></div></div><div class="bt"><div class="bw" style="width:8%"></div><div class="bq" style="left:100%"></div></div><div class="bl"><span>$0</span><span>Quota $108K</span></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Nala Money <span class="pill pa">S1 — progressed</span></div><div class="dm">Commercial · S1 · Jun 4</div></div><div><div class="da a">$20,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Genesis RG <span class="pill pa">VQ1</span></div><div class="dm">Large SMB · VQ1 · Jun 18</div></div><div><div class="da a">$11,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">BKV Vibro <span class="pill pa">VQ1</span></div><div class="dm">Large SMB · VQ1 · May 29</div></div><div><div class="da a">$10,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Beehive <span class="pill pg">N1 — jumped from VQ1</span></div><div class="dm">Large SMB · N1 · May 29</div></div><div><div class="da g">$9,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Hubject · Eres Group · others</div><div class="dm">DV1/DVQ1 · various</div></div><div><div class="da d">$80K pipeline</div></div></div>
+    </div>
+    <div class="rep-card">
+      <div class="rep-head"><div><div class="rn">Amit Borges</div><div class="rq">$108K quota</div></div><div class="ra"><div class="rb" style="color:var(--amber)">Best $58K · Worst $44K</div><div class="rw">54% best · 41% worst</div></div></div>
+      <div class="rep-bar"><div class="bt"><div class="bb" style="width:54%"></div><div class="bq" style="left:100%"></div></div><div class="bt"><div class="bw" style="width:41%"></div><div class="bq" style="left:100%"></div></div><div class="bl"><span>$0</span><span>Quota $108K</span></div></div>
+      <div class="ds">Closed won — Q2</div>
+      <div class="dr"><div><div class="dn">Solvigo.ai <span class="pill pcw">closed</span></div><div class="dm">May 4</div></div><div><div class="da cw">$5,500</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Coinspaid <span class="pill pg">S2 · $22K confirmed</span></div><div class="dm">Large SMB · May 31 · decision call May 26</div></div><div><div class="da g">$22,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Papirfly <span class="pill pg">N1 negotiating</span></div><div class="dm">Commercial · N1 · May 31</div></div><div><div class="da g">$16,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Banfico</div><div class="dm">Large SMB · DVQ1 · Jun 30</div></div><div><div class="da a">$14,000</div></div></div>
+    </div>
+  </div>
+
+  <div class="varun"><strong>Varun Sharma</strong> — joined May 11. $20K Q2 quota active. Pipeline build in progress.</div>
+
+  <div class="gap-card">
+    <div class="gap-head"><div class="gap-ht">Gaps to quota — best case</div><div class="gap-sub">Quota: $544K</div></div>
+    <div class="gap-row"><div class="gr">Monika</div><div class="gd">$89K best case exceeds $84K quota. First rep tracking to exceed. S1 pipeline creates Jul upside.</div><div class="gn g">+$5K</div></div>
+    <div class="gap-row"><div class="gr">Sanket</div><div class="gd">$102K best case vs $120K. JEX + Consumer Direct + Centura all need to land.</div><div class="gn r">-$18K</div></div>
+    <div class="gap-row"><div class="gr">Aravind</div><div class="gd">$50K best case. Kallidus scoping and Optym pricing are near-term closers.</div><div class="gn r">-$34K</div></div>
+    <div class="gap-row"><div class="gr">Aditya</div><div class="gd">$62K best case. Beehive at N1 and Nala at S1 lead. Zero closed to date.</div><div class="gn r">-$46K</div></div>
+    <div class="gap-row"><div class="gr">Amit</div><div class="gd">$58K best case. Coinspaid + Papirfly anchor it. Pipeline gap remains structural.</div><div class="gn r">-$50K</div></div>
+    <div class="gap-row"><div class="gr">Varun</div><div class="gd">Joined May 11. Pipeline build starting.</div><div class="gn r">-$20K</div></div>
+    <div class="gap-row"><div class="gr">Total</div><div class="gd">$105K gap in best case. Monika first rep projected to exceed quota.</div><div class="gn r">-$105K</div></div>
+  </div>
+
+  <div class="action-card">
+    <div class="action-head"><div class="action-ht">Actions — week of May 12</div></div>
+    <div class="ac"><div class="ac-n">01</div><div class="ac-t"><strong>Monika</strong> — close PMC Commerce by May 23. <span>At S2 — contract should land this week.</span></div></div>
+    <div class="ac"><div class="ac-n">02</div><div class="ac-t"><strong>Sanket</strong> — Consumer Direct COO meeting outcome. <span>Meeting was today — what is the next step?</span></div></div>
+    <div class="ac"><div class="ac-n">03</div><div class="ac-t"><strong>Amit</strong> — Coinspaid decision call May 26. <span>Confirm Denys has final commercial.</span></div></div>
+    <div class="ac"><div class="ac-n">04</div><div class="ac-t"><strong>Aditya</strong> — push Beehive to close by May 29. <span>At N1 — next expected close for the team.</span></div></div>
+    <div class="ac"><div class="ac-n">05</div><div class="ac-t"><strong>Aravind</strong> — Kallidus scoping doc. <span>Escalate to Jeremy Benson if still blocked.</span></div></div>
+    <div class="ac"><div class="ac-n">06</div><div class="ac-t"><strong>All reps</strong> — outbound focus on 150–250 employee companies. <span>Better ACV leverage per forecast call.</span></div></div>
+  </div>
+  <div class="dash-footer"><span>Sprinto · Q2 FY26 · New Business Sales</span><span>Best $439K (81%) · Worst $161K (30%) · CW $19,288</span></div>
+</div>
+
+<!-- ═══ WEEK 3 — MAY 19 ═══ -->
+<div id="w3" class="week-panel">
+  <div class="kpi-row">
+    <div class="kpi"><div class="kl">Team quota</div><div class="kv">$544K</div><div class="ks">6 reps · Varun ramping</div></div>
+    <div class="kpi"><div class="kl">Closed won (QTD)</div><div class="kv b">$36,288</div><div class="ks">5 deals · May closes only</div><div class="kd up">+$17K vs last week</div></div>
+    <div class="kpi"><div class="kl">Best case</div><div class="kv g">$461K</div><div class="ks">85% attainment</div><div class="kd up">↑ incl. Q1 advanced deals</div></div>
+    <div class="kpi"><div class="kl">Worst case</div><div class="kv a">$156K</div><div class="ks">29% attainment</div></div>
+  </div>
+
+  <div class="wow">
+    <div class="wow-title">Week-on-week changes vs May 12</div>
+    <div class="wow-grid">
+      <div class="wi wi-g"><strong>Jaybro closed $8K</strong> · Aravind · <span>May 14</span></div>
+      <div class="wi wi-g"><strong>Innocito closed $9K</strong> · Aditya · <span>May 16 — first Q2 close</span></div>
+      <div class="wi wi-g"><strong>PMC Commerce → S2</strong> · Monika · <span>Contract imminent May 23</span></div>
+      <div class="wi wi-g"><strong>Beehive → N1</strong> · Aditya · <span>Strong stage progression</span></div>
+      <div class="wi wi-g"><strong>Nala Money → S1</strong> · Aditya · <span>Progressed from VQ1</span></div>
+      <div class="wi wi-r"><strong>m3connect → Closed Lost</strong> · Aditya · <span>$12K removed from pipeline</span></div>
+      <div class="wi wi-a"><strong>Papirfly → S1</strong> · Amit · <span>Regressed from N1 — needs explanation</span></div>
+      <div class="wi wi-a"><strong>4 Q1 advanced deals surfaced</strong> · Aravind + Amit · <span>N1/NC1/S1 stage — dates stuck in Q1</span></div>
+    </div>
+  </div>
+
+  <div class="section-title" style="margin-top:0">Scenario view</div>
+  <div class="scenarios">
+    <div class="sc">
+      <div class="sc-head best"><div class="sc-lbl">Best case</div><div class="sc-tot">$461,000</div><div class="sc-sub">85% attainment · all possibles land</div></div>
+      <div class="sc-sec">Already closed (Q2)</div>
+      <div class="sc-deal"><div><div class="sd-n">OliveCrypto · Solvigo · DeviceNexus · Jaybro · Innocito</div><div class="sd-m">Monika · Amit · Sanket · Aravind · Aditya</div></div><div><div class="sd-a g">$36,288</div></div></div>
+      <div class="sc-sec">High confidence</div>
+      <div class="sc-deal"><div><div class="sd-n">JEX Technologies</div><div class="sd-m">Sanket · SMB · D1 · May 31</div></div><div><div class="sd-a">$35,400</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Coinspaid</div><div class="sd-m">Amit · Large SMB · S2 · May 31</div></div><div><div class="sd-a">$22,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">PMC Commerce</div><div class="sd-m">Monika · Commercial · S2 · May 23</div></div><div><div class="sd-a">$20,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Oleeo</div><div class="sd-m">Monika · Large SMB · S2 · May 29</div></div><div><div class="sd-a">$17,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Kallidus</div><div class="sd-m">Aravind · Large SMB · S1 · May 31</div></div><div><div class="sd-a">$15,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Optym</div><div class="sd-m">Aravind · Commercial · N2 · May 31</div></div><div><div class="sd-a">$10,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Beehive</div><div class="sd-m">Aditya · Large SMB · N1 · May 29</div></div><div><div class="sd-a">$9,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">EKCS</div><div class="sd-m">Monika · SMB · S6 · May 19</div></div><div><div class="sd-a">$5,000</div></div></div>
+      <div class="sc-sec q1">Date stuck in Q1 — advanced stage</div>
+      <div class="sc-deal q1"><div><div class="sd-n">Strand Life Sciences <span class="pill pp">date stuck in Q1</span></div><div class="sd-m">Aravind · N1 Negotiating</div></div><div><div class="sd-a p">$12,532</div></div></div>
+      <div class="sc-deal q1"><div><div class="sd-n">Datajoy <span class="pill pp">date stuck in Q1</span></div><div class="sd-m">Amit · NC1 Negotiating & Contracting</div></div><div><div class="sd-a p">$12,000</div></div></div>
+      <div class="sc-deal q1"><div><div class="sd-n">Internshala <span class="pill pp">date stuck in Q1</span></div><div class="sd-m">Aravind · N1 Negotiating</div></div><div><div class="sd-a p">$10,000</div></div></div>
+      <div class="sc-deal q1"><div><div class="sd-n">Tribute Tech <span class="pill pp">date stuck in Q1</span></div><div class="sd-m">Aravind · S1 Mutual Action Plan</div></div><div><div class="sd-a p">$10,000</div></div></div>
+      <div class="sc-sec">Possible</div>
+      <div class="sc-deal"><div><div class="sd-n">PAIX · Cowrks · aicerts · Hamat · Technosoft</div><div class="sd-m">Monika · S1 · Jun–Jul</div></div><div><div class="sd-a a">$65,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Consumer Direct</div><div class="sd-m">Sanket · Large SMB · DV1 · May 31</div></div><div><div class="sd-a a">$40,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Centura (partner deal)</div><div class="sd-m">Sanket · Commercial · D1 · May 31 · EMEA/France</div></div><div><div class="sd-a a">$27,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">YesMadam · Kissflow</div><div class="sd-m">Aravind · V3/DV1</div></div><div><div class="sd-a a">$25,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">CapCenter</div><div class="sd-m">Sanket · Large SMB · DV1 · May 31</div></div><div><div class="sd-a a">$20,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Papirfly</div><div class="sd-m">Amit · Large SMB · S1 · May 31</div></div><div><div class="sd-a a">$15,500</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Nala Money</div><div class="sd-m">Aditya · Commercial · S1 · Jun 4</div></div><div><div class="sd-a a">$15,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Banfico</div><div class="sd-m">Amit · Large SMB · DVQ1 · Jun 30</div></div><div><div class="sd-a a">$14,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Genesis RG</div><div class="sd-m">Aditya · Large SMB · VQ1 · Jun 18</div></div><div><div class="sd-a a">$11,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">BKV Vibro</div><div class="sd-m">Aditya · Large SMB · VQ1 · Jun 30</div></div><div><div class="sd-a a">$10,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">BMS team deal</div><div class="sd-m">Aditya · Large SMB · DV1 · Jun 30 · 2nd demo today</div></div><div><div class="sd-a a">$9,000</div></div></div>
+      <div class="sc-foot"><span>Best case total</span><span style="color:var(--green)">~$461,000</span></div>
+    </div>
+    <div class="sc">
+      <div class="sc-head worst"><div class="sc-lbl">Worst case</div><div class="sc-tot">$156,000</div><div class="sc-sub">29% attainment · high confidence only</div></div>
+      <div class="sc-sec">Already closed (Q2)</div>
+      <div class="sc-deal"><div><div class="sd-n">OliveCrypto · Solvigo · DeviceNexus · Jaybro · Innocito</div><div class="sd-m">5 deals · May 2026</div></div><div><div class="sd-a g">$36,288</div></div></div>
+      <div class="sc-sec">Survives</div>
+      <div class="sc-deal"><div><div class="sd-n">JEX Technologies</div><div class="sd-m">Sanket · D1 · May 31 · legal cleared</div></div><div><div class="sd-a">$35,400</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Coinspaid</div><div class="sd-m">Amit · S2 · $22K confirmed · decision May 26</div></div><div><div class="sd-a">$22,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">PMC Commerce</div><div class="sd-m">Monika · S2 · May 23 · contract out</div></div><div><div class="sd-a">$20,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Oleeo</div><div class="sd-m">Monika · S2 · May 29 · contract out</div></div><div><div class="sd-a">$17,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Optym</div><div class="sd-m">Aravind · N2 pricing · May 31</div></div><div><div class="sd-a">$10,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Beehive</div><div class="sd-m">Aditya · N1 negotiating · May 29</div></div><div><div class="sd-a">$9,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">EKCS</div><div class="sd-m">Monika · S6 · closes today</div></div><div><div class="sd-a">$5,000</div></div></div>
+      <div class="sc-sec">Falls away</div>
+      <div class="sc-deal"><div><div class="sd-n">Kallidus · Papirfly (regressed)</div><div class="sd-m">Aravind · Amit — S1 stage, not confirmed</div></div><div><div class="sd-drop">not confirmed</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Consumer Direct · CapCenter · Centura</div><div class="sd-m">Sanket — amounts not prospect-confirmed</div></div><div><div class="sd-drop">unconfirmed</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">PAIX · Cowrks · aicerts · Hamat · Technosoft</div><div class="sd-m">Monika — S1, Jun–Jul close dates</div></div><div><div class="sd-drop">too early</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Nala Money · Genesis · BKV · BMS deal</div><div class="sd-m">Aditya — S1/VQ1, unconfirmed</div></div><div><div class="sd-drop">unconfirmed</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Q1 stale deals (Strand · Datajoy · Internshala · Tribute)</div><div class="sd-m">Advanced stage but dates not yet corrected</div></div><div><div class="sd-drop">dates in Q1</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">YesMadam · Kissflow · Banfico</div><div class="sd-m">Aravind · Amit — mid stage</div></div><div><div class="sd-drop">early stage</div></div></div>
+      <div class="sc-foot"><span>Worst case total</span><span style="color:var(--amber)">~$156,000</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Rep-level forecast</div>
+  <div class="rep-grid">
+    <div class="rep-card">
+      <div class="rep-head"><div><div class="rn">Monika Solanki</div><div class="rq">$84K quota</div></div><div class="ra"><div class="rb" style="color:var(--green)">Best $115K · Worst $50K</div><div class="rw">136% best · 59% worst</div></div></div>
+      <div class="rep-bar"><div class="bt"><div class="bb" style="width:100%"></div><div class="bq" style="left:93%"></div></div><div class="bt"><div class="bw" style="width:59%"></div><div class="bq" style="left:93%"></div></div><div class="bl"><span>$0</span><span>Quota $84K</span></div></div>
+      <div class="ds">Closed won — Q2</div>
+      <div class="dr"><div><div class="dn">OliveCrypto <span class="pill pcw">closed</span></div><div class="dm">May 8</div></div><div><div class="da cw">$7,588</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">PMC Commerce <span class="pill pg">S2 — contract imminent</span></div><div class="dm">Commercial · S2 · May 23</div></div><div><div class="da g">$20,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Oleeo <span class="pill pg">S2 — contract out</span></div><div class="dm">Large SMB · S2 · May 29</div></div><div><div class="da g">$17,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">PAIX <span class="pill pa">S1</span></div><div class="dm">Mid Market · Jul 3</div></div><div><div class="da a">$15,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Cowrks <span class="pill pa">S1</span></div><div class="dm">Commercial · Jul 17</div></div><div><div class="da a">$15,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Hamat <span class="pill pa">S1</span></div><div class="dm">Commercial · Jul 17</div></div><div><div class="da a">$15,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">aicerts <span class="pill pa">S1</span></div><div class="dm">Commercial · Jun 26</div></div><div><div class="da a">$10,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Technosoft <span class="pill pa">S1</span></div><div class="dm">Mid Market · Jul 22</div></div><div><div class="da a">$10,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">EKCS <span class="pill pg">closes today</span></div><div class="dm">SMB · S6 · May 19</div></div><div><div class="da g">$5,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Digitap · STRSI</div><div class="dm">DV1 · Jun–Jul</div></div><div><div class="da d">$18K pipeline</div></div></div>
+    </div>
+    <div class="rep-card">
+      <div class="rep-head"><div><div class="rn">Sanket Shah</div><div class="rq">$120K quota</div></div><div class="ra"><div class="rb" style="color:var(--green)">Best $129K · Worst $42K</div><div class="rw">107% best · 35% worst</div></div></div>
+      <div class="rep-bar"><div class="bt"><div class="bb" style="width:100%"></div><div class="bq" style="left:93%"></div></div><div class="bt"><div class="bw" style="width:35%"></div><div class="bq" style="left:93%"></div></div><div class="bl"><span>$0</span><span>Quota $120K</span></div></div>
+      <div class="ds">Closed won — Q2</div>
+      <div class="dr"><div><div class="dn">DeviceNexus.ai <span class="pill pcw">closed</span></div><div class="dm">May 5</div></div><div><div class="da cw">$6,200</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Consumer Direct <span class="pill pa">COO meeting held</span></div><div class="dm">Large SMB · DV1 · May 31</div></div><div><div class="da a">$40,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">JEX Technologies <span class="pill pg">legal cleared</span></div><div class="dm">SMB · D1 · May 31</div></div><div><div class="da g">$35,400</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Centura (partner deal) <span class="pill pa">EMEA/France</span></div><div class="dm">Commercial · D1 · May 31</div></div><div><div class="da a">$27,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">CapCenter <span class="pill pa">in progress</span></div><div class="dm">Large SMB · DV1 · May 31</div></div><div><div class="da a">$20,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Tilt</div><div class="dm">Commercial · D1 · May 31</div></div><div><div class="da d">$13,500 · watching</div></div></div>
+    </div>
+    <div class="rep-card">
+      <div class="rep-head"><div><div class="rn">Aravind Bharathi</div><div class="rq">$84K quota</div></div><div class="ra"><div class="rb" style="color:var(--green)">Best $120K · Worst $33K</div><div class="rw">143% best · 39% worst</div></div></div>
+      <div class="rep-bar"><div class="bt"><div class="bb" style="width:100%"></div><div class="bq" style="left:93%"></div></div><div class="bt"><div class="bw" style="width:39%"></div><div class="bq" style="left:93%"></div></div><div class="bl"><span>$0</span><span>Quota $84K</span></div></div>
+      <div class="ds">Closed won — Q2</div>
+      <div class="dr"><div><div class="dn">Jaybro <span class="pill pcw">closed</span></div><div class="dm">May 14</div></div><div><div class="da cw">$8,000</div></div></div>
+      <div class="ds">Active Q2 deals — by amount</div>
+      <div class="dr"><div><div class="dn">Kallidus <span class="pill pa">S1</span></div><div class="dm">Large SMB · S1 · May 31</div></div><div><div class="da a">$15,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Kissflow <span class="pill pa">DV1</span></div><div class="dm">Mid Market · May 31</div></div><div><div class="da a">$15,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Optym <span class="pill pg">N2 pricing</span></div><div class="dm">Commercial · N2 · May 31</div></div><div><div class="da g">$10,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">YesMadam <span class="pill pa">V3 custom demo</span></div><div class="dm">Mid Market · Jun 1</div></div><div><div class="da a">$10,000</div></div></div>
+      <div class="ds q1">Date stuck in Q1 — update close date</div>
+      <div class="dr q1"><div><div class="dn">Strand Life Sciences <span class="pill pp">date stuck in Q1</span></div><div class="dm">N1 Negotiating · Apr 30 date</div></div><div><div class="da p">$12,532</div></div></div>
+      <div class="dr q1"><div><div class="dn">Internshala <span class="pill pp">date stuck in Q1</span></div><div class="dm">N1 Negotiating · Apr 30 date</div></div><div><div class="da p">$10,000</div></div></div>
+      <div class="dr q1"><div><div class="dn">Tribute Tech <span class="pill pp">date stuck in Q1</span></div><div class="dm">S1 Mutual Action Plan · Apr 30 date</div></div><div><div class="da p">$10,000</div></div></div>
+      <div class="ds">Earlier pipeline</div>
+      <div class="dr"><div><div class="dn">Quantum MF · ibisworld · Money View · Hikeapp</div><div class="dm">D1/DV1 · Jun–Jul dates</div></div><div><div class="da d">$57K pipeline</div></div></div>
+    </div>
+    <div class="rep-card">
+      <div class="rep-head"><div><div class="rn">Aditya Kank</div><div class="rq">$108K quota</div></div><div class="ra"><div class="rb" style="color:var(--amber)">Best $64K · Worst $33K</div><div class="rw">59% best · 31% worst</div></div></div>
+      <div class="rep-bar"><div class="bt"><div class="bb" style="width:59%"></div><div class="bq" style="left:100%"></div></div><div class="bt"><div class="bw" style="width:31%"></div><div class="bq" style="left:100%"></div></div><div class="bl"><span>$0</span><span>Quota $108K</span></div></div>
+      <div class="ds">Closed won — Q2</div>
+      <div class="dr"><div><div class="dn">Innocito Technologies <span class="pill pcw">closed</span></div><div class="dm">May 16</div></div><div><div class="da cw">$9,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Nala Money <span class="pill pa">S1 — progressed</span></div><div class="dm">Commercial · S1 · Jun 4</div></div><div><div class="da a">$15,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Genesis RG <span class="pill pa">VQ1 · waiting on vendor quotes</span></div><div class="dm">Large SMB · VQ1 · Jun 18</div></div><div><div class="da a">$11,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">BKV Vibro <span class="pill pa">VQ1</span></div><div class="dm">Large SMB · VQ1 · Jun 30</div></div><div><div class="da a">$10,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Beehive <span class="pill pg">N1 negotiating</span></div><div class="dm">Large SMB · N1 · May 29</div></div><div><div class="da g">$9,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">BMS team deal <span class="pill pb">2nd demo today</span></div><div class="dm">Large SMB · DV1 · Jun 30</div></div><div><div class="da a">$9,000</div></div></div>
+      <div class="ds">Earlier pipeline</div>
+      <div class="dr"><div><div class="dn">Eres Group · Holmes · and others</div><div class="dm">DV1/DVQ1 · various</div></div><div><div class="da d">$60K pipeline</div></div></div>
+    </div>
+    <div class="rep-card">
+      <div class="rep-head"><div><div class="rn">Amit Borges</div><div class="rq">$108K quota</div></div><div class="ra"><div class="rb" style="color:var(--amber)">Best $69K · Worst $28K</div><div class="rw">64% best · 26% worst</div></div></div>
+      <div class="rep-bar"><div class="bt"><div class="bb" style="width:64%"></div><div class="bq" style="left:100%"></div></div><div class="bt"><div class="bw" style="width:26%"></div><div class="bq" style="left:100%"></div></div><div class="bl"><span>$0</span><span>Quota $108K</span></div></div>
+      <div class="ds">Closed won — Q2</div>
+      <div class="dr"><div><div class="dn">Solvigo.ai <span class="pill pcw">closed</span></div><div class="dm">May 4</div></div><div><div class="da cw">$5,500</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Coinspaid <span class="pill pg">S2 · $22K confirmed</span></div><div class="dm">Large SMB · S2 · May 31 · decision call May 26</div></div><div><div class="da g">$22,000</div></div></div>
+      <div class="dr warn"><div><div class="dn">Papirfly <span class="pill pw">regressed from N1</span></div><div class="dm">Large SMB · S1 · May 31</div></div><div><div class="da a">$15,500</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Banfico</div><div class="dm">Large SMB · DVQ1 · Jun 30</div></div><div><div class="da a">$14,000</div></div></div>
+      <div class="ds q1">Date stuck in Q1 — update close date</div>
+      <div class="dr q1"><div><div class="dn">Datajoy <span class="pill pp">date stuck in Q1</span></div><div class="dm">NC1 Negotiating & Contracting · Feb 28 date</div></div><div><div class="da p">$12,000</div></div></div>
+      <div class="ds">Earlier pipeline</div>
+      <div class="dr"><div><div class="dn">Limitless Care · and others</div><div class="dm">DVQ1 · review for Nurture</div></div><div><div class="da d">$29K pipeline</div></div></div>
+    </div>
+  </div>
+
+  <div class="varun"><strong>Varun Sharma</strong> — joined May 11. $20K Q2 quota active. Pipeline build in progress.</div>
+
+  <div class="gap-card">
+    <div class="gap-head"><div class="gap-ht">Gaps to quota — best case</div><div class="gap-sub">Quota: $544K · Q1 advanced deals in open pipeline</div></div>
+    <div class="gap-row"><div class="gr">Monika</div><div class="gd">$115K best case exceeds quota. Three May closes at S2. Five S1 deals provide Jun–Jul upside.</div><div class="gn g">+$31K</div></div>
+    <div class="gap-row"><div class="gr">Aravind</div><div class="gd">$120K best case exceeds quota. Includes three Q1 advanced deals — close dates need updating to be visible in Q2.</div><div class="gn g">+$36K</div></div>
+    <div class="gap-row"><div class="gr">Sanket</div><div class="gd">$129K best case exceeds quota. JEX anchors it. Consumer Direct and Centura both need to land.</div><div class="gn g">+$9K</div></div>
+    <div class="gap-row"><div class="gr">Aditya</div><div class="gd">$64K best case. Beehive at N1 is next expected close. Needs 3–4 VQ1 deals to progress.</div><div class="gn r">-$44K</div></div>
+    <div class="gap-row"><div class="gr">Amit</div><div class="gd">$69K best case. Coinspaid and Datajoy anchor it. Papirfly regression reduces confidence. Needs new pipeline.</div><div class="gn r">-$39K</div></div>
+    <div class="gap-row"><div class="gr">Varun</div><div class="gd">Ramping. Pipeline build in progress.</div><div class="gn r">-$20K</div></div>
+    <div class="gap-row"><div class="gr">Total</div><div class="gd">$66K gap in best case. Three reps tracking to exceed individual quota.</div><div class="gn r">-$66K</div></div>
+  </div>
+
+  <div class="action-card">
+    <div class="action-head"><div class="action-ht">Actions — week of May 19</div></div>
+    <div class="ac"><div class="ac-n">01</div><div class="ac-t"><strong>Monika</strong> — close PMC Commerce and Oleeo. <span>Both at S2 — May 23 and May 29 respectively.</span></div></div>
+    <div class="ac"><div class="ac-n">02</div><div class="ac-t"><strong>Aravind</strong> — update close dates on Strand Life Sciences, Internshala and Tribute Tech to Q2. <span>All at N1/S1 but invisible in Q2 pipeline view.</span></div></div>
+    <div class="ac"><div class="ac-n">03</div><div class="ac-t"><strong>Amit</strong> — update Datajoy close date from Q1 to current. <span>NC1 stage — nearly done but not appearing in Q2 forecast.</span></div></div>
+    <div class="ac"><div class="ac-n">04</div><div class="ac-t"><strong>Amit</strong> — explain Papirfly regression from N1 → S1. <span>Is May 31 close still realistic?</span></div></div>
+    <div class="ac"><div class="ac-n">05</div><div class="ac-t"><strong>Amit</strong> — Coinspaid decision call May 26. <span>Confirm Denys is ready to sign.</span></div></div>
+    <div class="ac"><div class="ac-n">06</div><div class="ac-t"><strong>Sanket</strong> — Consumer Direct next steps. <span>COO meeting was May 12 — still showing DV1.</span></div></div>
+    <div class="ac"><div class="ac-n">07</div><div class="ac-t"><strong>Aditya</strong> — close Beehive by May 29. <span>At N1 — should be the next won deal.</span></div></div>
+    <div class="ac"><div class="ac-n">08</div><div class="ac-t"><strong>All reps</strong> — move stalled 60+ day deals to Nurture. <span>Outbound focus on 150–250 employee companies for better ACV.</span></div></div>
+  </div>
+  <div class="dash-footer"><span>Sprinto · Q2 FY26 · New Business Sales</span><span>Best $461K (85%) · Worst $156K (29%) · Q2 CW $36,288</span></div>
+</div>
+
+<!-- ═══ WEEK 4 — MAY 26 ═══ -->
+<div id="w4" class="week-panel">
+  <div class="kpi-row">
+    <div class="kpi"><div class="kl">Team quota</div><div class="kv">$544K</div><div class="ks">6 reps · Varun ramping</div></div>
+    <div class="kpi"><div class="kl">Closed won (QTD)</div><div class="kv b">$61,820</div><div class="ks">8 deals · May closes only</div><div class="kd up">+$25,532 vs last week</div></div>
+    <div class="kpi"><div class="kl">Best case</div><div class="kv g">$490K</div><div class="ks">90% attainment</div><div class="kd up">↑ from 85% last week</div></div>
+    <div class="kpi"><div class="kl">Worst case</div><div class="kv a">$200K</div><div class="ks">37% attainment</div><div class="kd up">↑ from 29% last week</div></div>
+  </div>
+
+  <div class="wow">
+    <div class="wow-title">Week-on-week changes vs May 19</div>
+    <div class="wow-grid">
+      <div class="wi wi-g"><strong>Strand Life Sciences closed $12,532</strong> · Aravind · <span>May 25 — was Q1 stale deal, now closed</span></div>
+      <div class="wi wi-g"><strong>ValueChecker closed $7,000</strong> · Amit · <span>May 19 — new close, not in last week's export</span></div>
+      <div class="wi wi-g"><strong>EKCS closed $6,000</strong> · Monika · <span>May 20 — closed as expected</span></div>
+      <div class="wi wi-g"><strong>JEX → S3 Evaluation Testing</strong> · Sanket · <span>Progressed from D1</span></div>
+      <div class="wi wi-g"><strong>MillerZell → S6 Vendor of Choice</strong> · Sanket · <span>$19,850 — new high-confidence deal</span></div>
+      <div class="wi wi-g"><strong>Internshala date corrected</strong> · Aravind · <span>Now showing May 31 — no longer stuck in Q1</span></div>
+      <div class="wi wi-a"><strong>PMC Commerce date slipped</strong> · Monika · <span>May 23 → Jun 20</span></div>
+      <div class="wi wi-a"><strong>Oleeo date slipped</strong> · Monika · <span>May 29 → Jun 12</span></div>
+      <div class="wi wi-a"><strong>Coinspaid decision today</strong> · Amit · <span>May 26 — outcome pending</span></div>
+      <div class="wi wi-a"><strong>Datajoy gone from export</strong> · Amit · <span>Closed lost or archived</span></div>
+    </div>
+  </div>
+
+  <div class="section-title" style="margin-top:0">Scenario view</div>
+  <div class="scenarios">
+    <div class="sc">
+      <div class="sc-head best"><div class="sc-lbl">Best case</div><div class="sc-tot">$490,000</div><div class="sc-sub">90% attainment · all possibles land</div></div>
+      <div class="sc-sec">Already closed (Q2)</div>
+      <div class="sc-deal"><div><div class="sd-n">OliveCrypto · Solvigo · DeviceNexus · Jaybro · Innocito · Strand · ValueChecker · EKCS</div><div class="sd-m">8 deals · May 2026</div></div><div><div class="sd-a g">$61,820</div></div></div>
+      <div class="sc-sec">High confidence</div>
+      <div class="sc-deal"><div><div class="sd-n">JEX Technologies</div><div class="sd-m">Sanket · SMB · S3 Evaluation · May 31</div></div><div><div class="sd-a">$35,400</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Coinspaid</div><div class="sd-m">Amit · Large SMB · S2 · May 31 · decision today</div></div><div><div class="sd-a">$22,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">PMC Commerce</div><div class="sd-m">Monika · Commercial · S2 · Jun 20</div></div><div><div class="sd-a">$20,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">MillerZell</div><div class="sd-m">Sanket · Commercial · S6 Vendor of Choice · May 31</div></div><div><div class="sd-a">$19,850</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Oleeo</div><div class="sd-m">Monika · Large SMB · S2 · Jun 12</div></div><div><div class="sd-a">$17,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Kallidus</div><div class="sd-m">Aravind · Large SMB · S1 · May 31</div></div><div><div class="sd-a">$15,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Optym</div><div class="sd-m">Aravind · Commercial · N2 · May 31</div></div><div><div class="sd-a">$10,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Beehive</div><div class="sd-m">Aditya · Large SMB · N1 · May 29</div></div><div><div class="sd-a">$9,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Internshala</div><div class="sd-m">Aravind · N1 · May 31</div></div><div><div class="sd-a">$5,566</div></div></div>
+      <div class="sc-sec">Possible</div>
+      <div class="sc-deal"><div><div class="sd-n">Consumer Direct</div><div class="sd-m">Sanket · Large SMB · DV1 · May 31</div></div><div><div class="sd-a a">$40,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Centura (partner deal)</div><div class="sd-m">Sanket · Commercial · D1 · May 31 · EMEA/France</div></div><div><div class="sd-a a">$34,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">PAIX · Cowrks · aicerts · Hamat · Technosoft</div><div class="sd-m">Monika · S1 · Jun–Jul</div></div><div><div class="sd-a a">$55,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Papirfly</div><div class="sd-m">Amit · Large SMB · S1 · May 31</div></div><div><div class="sd-a a">$15,500</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Nala Money</div><div class="sd-m">Aditya · Commercial · S1 · Jun 4</div></div><div><div class="sd-a a">$15,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Arkieva</div><div class="sd-m">Sanket · DV1 · May 31 · new this week</div></div><div><div class="sd-a a">$15,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Kissflow</div><div class="sd-m">Aravind · Mid Market · DV1 · May 31</div></div><div><div class="sd-a a">$15,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Banfico</div><div class="sd-m">Amit · Large SMB · DVQ1 · Jun 30</div></div><div><div class="sd-a a">$14,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Tilt</div><div class="sd-m">Sanket · Commercial · S3 · May 31</div></div><div><div class="sd-a a">$13,500</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Genesis RG</div><div class="sd-m">Aditya · Large SMB · VQ1 · Jun 18</div></div><div><div class="sd-a a">$11,000</div></div></div>
+      <div class="sc-foot"><span>Best case total</span><span style="color:var(--green)">~$490,000</span></div>
+    </div>
+    <div class="sc">
+      <div class="sc-head worst"><div class="sc-lbl">Worst case</div><div class="sc-tot">$200,000</div><div class="sc-sub">37% attainment · high confidence only</div></div>
+      <div class="sc-sec">Already closed (Q2)</div>
+      <div class="sc-deal"><div><div class="sd-n">8 deals across 4 reps</div><div class="sd-m">May 2026</div></div><div><div class="sd-a g">$61,820</div></div></div>
+      <div class="sc-sec">Survives</div>
+      <div class="sc-deal"><div><div class="sd-n">JEX Technologies</div><div class="sd-m">Sanket · S3 Evaluation · May 31</div></div><div><div class="sd-a">$35,400</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Coinspaid</div><div class="sd-m">Amit · S2 · $22K confirmed · decision today</div></div><div><div class="sd-a">$22,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">PMC Commerce</div><div class="sd-m">Monika · S2 · Jun 20</div></div><div><div class="sd-a">$20,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">MillerZell</div><div class="sd-m">Sanket · S6 Vendor of Choice · May 31</div></div><div><div class="sd-a">$19,850</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Oleeo</div><div class="sd-m">Monika · S2 · Jun 12</div></div><div><div class="sd-a">$17,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Optym</div><div class="sd-m">Aravind · N2 · May 31</div></div><div><div class="sd-a">$10,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Beehive</div><div class="sd-m">Aditya · N1 · May 29</div></div><div><div class="sd-a">$9,000</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Internshala</div><div class="sd-m">Aravind · N1 · May 31</div></div><div><div class="sd-a">$5,566</div></div></div>
+      <div class="sc-sec">Falls away</div>
+      <div class="sc-deal"><div><div class="sd-n">Consumer Direct · Centura · Arkieva · Tilt</div><div class="sd-m">Sanket — DV1/D1, amounts not confirmed</div></div><div><div class="sd-drop">unconfirmed</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Papirfly · Banfico · Kallidus</div><div class="sd-m">Amit · Aravind — S1/DVQ1, not confirmed</div></div><div><div class="sd-drop">not confirmed</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">PAIX · Cowrks · aicerts · Hamat · Technosoft</div><div class="sd-m">Monika — S1, Jun–Jul close dates</div></div><div><div class="sd-drop">too early</div></div></div>
+      <div class="sc-deal"><div><div class="sd-n">Nala Money · Genesis · BKV</div><div class="sd-m">Aditya — S1/VQ1, unconfirmed</div></div><div><div class="sd-drop">unconfirmed</div></div></div>
+      <div class="sc-foot"><span>Worst case total</span><span style="color:var(--amber)">~$200,000</span></div>
+    </div>
+  </div>
+
+  <div class="section-title">Rep-level forecast</div>
+  <div class="rep-grid">
+
+    <div class="rep-card">
+      <div class="rep-head"><div><div class="rn">Monika Solanki</div><div class="rq">$84K quota</div></div><div class="ra"><div class="rb" style="color:var(--green)">Best $122K · Worst $46K</div><div class="rw">145% best · 54% worst</div></div></div>
+      <div class="rep-bar"><div class="bt"><div class="bb" style="width:100%"></div><div class="bq" style="left:93%"></div></div><div class="bt"><div class="bw" style="width:54%"></div><div class="bq" style="left:93%"></div></div><div class="bl"><span>$0</span><span>Quota $84K</span></div></div>
+      <div class="ds">Closed won — Q2</div>
+      <div class="dr"><div><div class="dn">OliveCrypto <span class="pill pcw">closed</span></div><div class="dm">May 8</div></div><div><div class="da cw">$7,588</div></div></div>
+      <div class="dr"><div><div class="dn">EKCS <span class="pill pcw">closed</span></div><div class="dm">May 20</div></div><div><div class="da cw">$6,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">PMC Commerce <span class="pill pg">S2 — contract out</span></div><div class="dm">Commercial · S2 · Jun 20</div></div><div><div class="da g">$20,000</div></div></div>
+      <div class="dr"><div><div class="dn">Oleeo <span class="pill pg">S2 — contract out</span></div><div class="dm">Large SMB · S2 · Jun 12</div></div><div><div class="da g">$17,000</div></div></div>
+      <div class="dr"><div><div class="dn">PAIX <span class="pill pa">S1</span></div><div class="dm">Mid Market · Jul 21</div></div><div><div class="da a">$15,000</div></div></div>
+      <div class="dr"><div><div class="dn">Cowrks <span class="pill pa">S1</span></div><div class="dm">Commercial · Jul 17</div></div><div><div class="da a">$15,000</div></div></div>
+      <div class="dr"><div><div class="dn">Hamat <span class="pill pa">S1</span></div><div class="dm">Commercial · Jul 17</div></div><div><div class="da a">$15,000</div></div></div>
+      <div class="dr"><div><div class="dn">42Gears <span class="pill pa">DV1</span></div><div class="dm">Jun 9</div></div><div><div class="da a">$15,000</div></div></div>
+      <div class="dr"><div><div class="dn">aicerts <span class="pill pa">S1</span></div><div class="dm">Commercial · Jun 26</div></div><div><div class="da a">$10,000</div></div></div>
+      <div class="dr"><div><div class="dn">Digitap · Continuum · STRSI</div><div class="dm">DV1 · Jun–Jul</div></div><div><div class="da d">$26K pipeline</div></div></div>
+    </div>
+
+    <div class="rep-card">
+      <div class="rep-head"><div><div class="rn">Sanket Shah</div><div class="rq">$120K quota</div></div><div class="ra"><div class="rb" style="color:var(--green)">Best $163K · Worst $83K</div><div class="rw">136% best · 69% worst</div></div></div>
+      <div class="rep-bar"><div class="bt"><div class="bb" style="width:100%"></div><div class="bq" style="left:87%"></div></div><div class="bt"><div class="bw" style="width:69%"></div><div class="bq" style="left:87%"></div></div><div class="bl"><span>$0</span><span>Quota $120K</span></div></div>
+      <div class="ds">Closed won — Q2</div>
+      <div class="dr"><div><div class="dn">DeviceNexus.ai <span class="pill pcw">closed</span></div><div class="dm">May 5</div></div><div><div class="da cw">$6,200</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Consumer Direct <span class="pill pa">DV1 · ongoing</span></div><div class="dm">Large SMB · DV1 · May 31</div></div><div><div class="da a">$40,000</div></div></div>
+      <div class="dr"><div><div class="dn">JEX Technologies <span class="pill pg">S3 Evaluation</span></div><div class="dm">SMB · S3 · May 31</div></div><div><div class="da g">$35,400</div></div></div>
+      <div class="dr"><div><div class="dn">Centura (partner deal) <span class="pill pa">EMEA/France</span></div><div class="dm">Commercial · D1 · May 31</div></div><div><div class="da a">$34,000</div></div></div>
+      <div class="dr"><div><div class="dn">MillerZell <span class="pill pg">S6 Vendor of Choice</span></div><div class="dm">Commercial · May 31</div></div><div><div class="da g">$19,850</div></div></div>
+      <div class="dr"><div><div class="dn">Arkieva <span class="pill pa">DV1 — new this week</span></div><div class="dm">May 31</div></div><div><div class="da a">$15,000</div></div></div>
+      <div class="dr"><div><div class="dn">Tilt <span class="pill pg">S3 Evaluation</span></div><div class="dm">Commercial · May 31</div></div><div><div class="da g">$13,500</div></div></div>
+    </div>
+
+    <div class="rep-card">
+      <div class="rep-head"><div><div class="rn">Aravind Bharathi</div><div class="rq">$84K quota</div></div><div class="ra"><div class="rb" style="color:var(--green)">Best $111K · Worst $16K</div><div class="rw">132% best · 19% worst</div></div></div>
+      <div class="rep-bar"><div class="bt"><div class="bb" style="width:100%"></div><div class="bq" style="left:93%"></div></div><div class="bt"><div class="bw" style="width:19%"></div><div class="bq" style="left:93%"></div></div><div class="bl"><span>$0</span><span>Quota $84K</span></div></div>
+      <div class="ds">Closed won — Q2</div>
+      <div class="dr"><div><div class="dn">Strand Life Sciences <span class="pill pcw">closed</span></div><div class="dm">May 25 — was Q1 stale deal</div></div><div><div class="da cw">$12,532</div></div></div>
+      <div class="dr"><div><div class="dn">Jaybro <span class="pill pcw">closed</span></div><div class="dm">May 14</div></div><div><div class="da cw">$8,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Kallidus <span class="pill pa">S1</span></div><div class="dm">Large SMB · S1 · May 31</div></div><div><div class="da a">$15,000</div></div></div>
+      <div class="dr"><div><div class="dn">Kissflow <span class="pill pa">DV1</span></div><div class="dm">Mid Market · May 31</div></div><div><div class="da a">$15,000</div></div></div>
+      <div class="dr"><div><div class="dn">Quantum MF <span class="pill pa">DV1</span></div><div class="dm">Jun 1</div></div><div><div class="da a">$13,000</div></div></div>
+      <div class="dr"><div><div class="dn">ibisworld <span class="pill pa">D1</span></div><div class="dm">Jul 1</div></div><div><div class="da a">$12,600</div></div></div>
+      <div class="dr"><div><div class="dn">Optym <span class="pill pg">N2 pricing</span></div><div class="dm">Commercial · N2 · May 31</div></div><div><div class="da g">$10,000</div></div></div>
+      <div class="dr"><div><div class="dn">Money View · YesMadam</div><div class="dm">D1/V3 · Jun</div></div><div><div class="da a">$20,000</div></div></div>
+      <div class="dr"><div><div class="dn">Internshala <span class="pill pg">N1 negotiating</span></div><div class="dm">May 31 · date corrected this week</div></div><div><div class="da g">$5,566</div></div></div>
+      <div class="dr"><div><div class="dn">Hikeapp · Pureprofile · HackerEarth · ti8m · PEXA · adam@pexa</div><div class="dm">DV1/DVQ1/D1 · Jun–Jul</div></div><div><div class="da d">$40K pipeline</div></div></div>
+    </div>
+
+    <div class="rep-card">
+      <div class="rep-head"><div><div class="rn">Aditya Kank</div><div class="rq">$108K quota</div></div><div class="ra"><div class="rb" style="color:var(--amber)">Best $60K · Worst $33K</div><div class="rw">56% best · 31% worst</div></div></div>
+      <div class="rep-bar"><div class="bt"><div class="bb" style="width:56%"></div><div class="bq" style="left:100%"></div></div><div class="bt"><div class="bw" style="width:31%"></div><div class="bq" style="left:100%"></div></div><div class="bl"><span>$0</span><span>Quota $108K</span></div></div>
+      <div class="ds">Closed won — Q2</div>
+      <div class="dr"><div><div class="dn">Innocito Technologies <span class="pill pcw">closed</span></div><div class="dm">May 16</div></div><div><div class="da cw">$9,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Nala Money <span class="pill pa">S1 — progressed</span></div><div class="dm">Commercial · S1 · Jun 4</div></div><div><div class="da a">$15,000</div></div></div>
+      <div class="dr"><div><div class="dn">Eres Group <span class="pill pa">DV1 · next step to align</span></div><div class="dm">Jul 30</div></div><div><div class="da a">$15,000</div></div></div>
+      <div class="dr"><div><div class="dn">Genesis RG <span class="pill pa">VQ1 · waiting on vendor quotes</span></div><div class="dm">Large SMB · VQ1 · Jun 18</div></div><div><div class="da a">$11,000</div></div></div>
+      <div class="dr"><div><div class="dn">BKV Vibro <span class="pill pa">VQ1 · moving slow</span></div><div class="dm">Large SMB · VQ1 · Jun 30</div></div><div><div class="da a">$10,000</div></div></div>
+      <div class="dr"><div><div class="dn">Beehive <span class="pill pg">N1 negotiating</span></div><div class="dm">Large SMB · N1 · May 29</div></div><div><div class="da g">$9,000</div></div></div>
+      <div class="dr"><div><div class="dn">BMS team deal <span class="pill pa">DV1 · 2nd demo held</span></div><div class="dm">Large SMB · DV1 · Jun 30</div></div><div><div class="da a">$9,000</div></div></div>
+      <div class="dr"><div><div class="dn">Holmes · Zenith · AgadaBio · others</div><div class="dm">DVQ1 · flagged LP — review for Nurture</div></div><div><div class="da d">$25K stale pipeline</div></div></div>
+    </div>
+
+    <div class="rep-card">
+      <div class="rep-head"><div><div class="rn">Amit Borges</div><div class="rq">$108K quota</div></div><div class="ra"><div class="rb" style="color:var(--amber)">Best $60K · Worst $40K</div><div class="rw">56% best · 37% worst</div></div></div>
+      <div class="rep-bar"><div class="bt"><div class="bb" style="width:56%"></div><div class="bq" style="left:100%"></div></div><div class="bt"><div class="bw" style="width:37%"></div><div class="bq" style="left:100%"></div></div><div class="bl"><span>$0</span><span>Quota $108K</span></div></div>
+      <div class="ds">Closed won — Q2</div>
+      <div class="dr"><div><div class="dn">Solvigo.ai <span class="pill pcw">closed</span></div><div class="dm">May 4</div></div><div><div class="da cw">$5,500</div></div></div>
+      <div class="dr"><div><div class="dn">ValueChecker <span class="pill pcw">closed</span></div><div class="dm">May 19</div></div><div><div class="da cw">$7,000</div></div></div>
+      <div class="ds">Active deals — by amount</div>
+      <div class="dr"><div><div class="dn">Coinspaid <span class="pill pg">S2 · decision today</span></div><div class="dm">Large SMB · S2 · May 31 · $22K confirmed</div></div><div><div class="da g">$22,000</div></div></div>
+      <div class="dr warn"><div><div class="dn">Papirfly <span class="pill pw">still at S1</span></div><div class="dm">Large SMB · S1 · May 31</div></div><div><div class="da a">$15,500</div></div></div>
+      <div class="dr"><div><div class="dn">Banfico</div><div class="dm">Large SMB · DVQ1 · Jun 30</div></div><div><div class="da a">$14,000</div></div></div>
+    </div>
+
+  </div>
+
+  <div class="varun"><strong>Varun Sharma</strong> — ramping. No pipeline yet.</div>
+
+  <div class="gap-card">
+    <div class="gap-head"><div class="gap-ht">Gaps to quota — best case</div><div class="gap-sub">Quota: $544K · Q2 closes only</div></div>
+    <div class="gap-row"><div class="gr">Monika</div><div class="gd">$122K best case well exceeds $84K quota. Two S2 contracts outstanding. Five S1 deals build Jun–Jul pipeline.</div><div class="gn g">+$38K</div></div>
+    <div class="gap-row"><div class="gr">Sanket</div><div class="gd">$163K best case well exceeds $120K. JEX in S3 eval, MillerZell at vendor of choice — strongest rep this week.</div><div class="gn g">+$43K</div></div>
+    <div class="gap-row"><div class="gr">Aravind</div><div class="gd">$111K best case exceeds $84K. Two closes already. Optym and Internshala are next expected closes.</div><div class="gn g">+$27K</div></div>
+    <div class="gap-row"><div class="gr">Aditya</div><div class="gd">$60K best case. Beehive at N1 is the most imminent close. $108K quota needs significant new pipeline.</div><div class="gn r">-$48K</div></div>
+    <div class="gap-row"><div class="gr">Amit</div><div class="gd">$60K best case. Coinspaid decision today is critical. Papirfly still stalled at S1. Datajoy gone from pipeline.</div><div class="gn r">-$48K</div></div>
+    <div class="gap-row"><div class="gr">Varun</div><div class="gd">Ramping. No pipeline yet.</div><div class="gn r">-$20K</div></div>
+    <div class="gap-row"><div class="gr">Total</div><div class="gd">$54K gap in best case. Three reps projected to exceed individual quota.</div><div class="gn r">-$54K</div></div>
+  </div>
+
+  <div class="action-card">
+    <div class="action-head"><div class="action-ht">Actions — week of May 26</div></div>
+    <div class="ac"><div class="ac-n">01</div><div class="ac-t"><strong>Amit</strong> — Coinspaid decision today. <span>S2, $22K confirmed. What did Denys say?</span></div></div>
+    <div class="ac"><div class="ac-n">02</div><div class="ac-t"><strong>Aditya</strong> — close Beehive by May 29. <span>At N1 — three weeks in negotiation. Must close this week.</span></div></div>
+    <div class="ac"><div class="ac-n">03</div><div class="ac-t"><strong>Aravind</strong> — close Optym and Internshala by May 31. <span>N2 pricing and N1 negotiating — both should be done this week.</span></div></div>
+    <div class="ac"><div class="ac-n">04</div><div class="ac-t"><strong>Sanket</strong> — close MillerZell and JEX by May 31. <span>S6 VOC and S3 Eval — both at May 31 target. What's the blocker?</span></div></div>
+    <div class="ac"><div class="ac-n">05</div><div class="ac-t"><strong>Monika</strong> — PMC Commerce and Oleeo. <span>Both S2 with contracts out — dates slipped to Jun. Chase signatures this week.</span></div></div>
+    <div class="ac"><div class="ac-n">06</div><div class="ac-t"><strong>Amit</strong> — explain Papirfly. <span>Still at S1 three weeks after being at N1. What happened and what's the path forward?</span></div></div>
+    <div class="ac"><div class="ac-n">07</div><div class="ac-t"><strong>Sanket</strong> — Consumer Direct update. <span>Still at DV1 for six weeks. Need a clear next step or a realistic close date.</span></div></div>
+    <div class="ac"><div class="ac-n">08</div><div class="ac-t"><strong>Aditya</strong> — pipeline hygiene. <span>Holmes, Zenith, AgadaBio and others are LP/low-budget DVQ1 deals — move to Nurture. Focus on new outbound.</span></div></div>
+  </div>
+  <div class="dash-footer"><span>Sprinto · Q2 FY26 · New Business Sales</span><span>Best $490K (90%) · Worst $200K (37%) · Q2 CW $61,820</span></div>
+</div>
+
+<!-- ═══ WEEK 5 — JUN 2 ═══ -->
+<div id="w5" class="week-panel">
+  <div class="placeholder"><div class="ph-title">Week 5 — June 2</div><div class="ph-sub">Forecast data will be added after the June 2 review call.</div></div>
+</div>
+
+<!-- ═══ DEAL REVIEWS ═══ -->
+<div id="dr" class="week-panel">
+
+  <div class="section-title" style="margin-top:0">Deal reviews — May 8 to May 20</div>
+
+  <!-- ── PMC Commerce (Monika) ── -->
+  <div class="gap-card" style="margin-bottom:1.5rem">
+    <div class="gap-head">
+      <div class="gap-ht">PMC Commerce · Monika Solanki · $20,000</div>
+      <div class="gap-sub">Deal review May 8 · Shuba + Anirudh</div>
+    </div>
+    <div class="gap-row" style="grid-template-columns:140px 1fr;"><div class="gr">Deal status</div><div class="gd">S2 · Jun 20 close date · at risk. Sole vendor in evaluation but stuck due to UK stakeholder availability (Aaron + Elliot). Decision has slipped from March to May to June.</div></div>
+    <div class="gap-row" style="grid-template-columns:140px 1fr;"><div class="gr">Key risks</div><div class="gd">Aaron has a Vanta relationship and brought them into the evaluation. Elliot (technical approver) rated Sprinto 7–8/10 but flagged UI intuitiveness vs Vanta. Both decision-makers are UK-based with limited availability — the core reason for repeated slippage.</div></div>
+    <div class="gap-row" style="grid-template-columns:140px 1fr;"><div class="gr">Actions agreed</div><div class="gd">① Monika to deep-dive with Darshan on audit timeline, board requirements, CEO-level pain points. ② Upload closed deal CSV into Sales Navigator to find network connections to Aaron/Elliot. ③ Coordinate UK event invitations (Infosec / London Tech Week end of May). ④ Shuba to export 100–500 segment closed deals for Sales Navigator matching. ⑤ Set up next deal review.</div></div>
+    <div class="gap-row" style="grid-template-columns:140px 1fr;"><div class="gr">Actioned?</div><div class="gd" style="color:var(--red)">Partial. No Slack evidence of Sales Navigator work or Darshan reconnect. Monika is active on outbound (Hyperagent, Up.com.au) and working on aicerts solution call — but PMC-specific actions not visible. Date slipped to Jun 20 with contract still not signed, suggesting Aaron/Elliot remain unblocked. UK event coordination not confirmed.</div></div>
+  </div>
+
+  <!-- ── Consumer Direct (Sanket) ── -->
+  <div class="gap-card" style="margin-bottom:1.5rem">
+    <div class="gap-head">
+      <div class="gap-ht">Consumer Direct · Sanket Shah · $40,000</div>
+      <div class="gap-sub">Deal review May 15 · Shuba + Anirudh</div>
+    </div>
+    <div class="gap-row" style="grid-template-columns:140px 1fr;"><div class="gr">Deal status</div><div class="gd">DV1 · May 31 close date. COO approved, sandbox/trial phase starting. Vanta dropped out — Sprinto is sole vendor. COO has 25+ years security background. Audit partner A-Line already in place (Sprinto partnership).</div></div>
+    <div class="gap-row" style="grid-template-columns:140px 1fr;"><div class="gr">Key risk</div><div class="gd">New CFO joined after the evaluation was completed — major credibility risk. CFO will likely question vendor selection on brand grounds. COO needs ammunition to defend Sprinto to CFO before they engage directly.</div></div>
+    <div class="gap-row" style="grid-template-columns:140px 1fr;"><div class="gr">Actions agreed</div><div class="gd">① Sanket to validate new CFO identity via LinkedIn and call transcripts. ② Naga to send CFO-to-CFO ghostwritten messaging to the new CFO. ③ Sanket to coordinate A-Line partnership angle in follow-up messaging. ④ Sanket to follow up on trial details with COO. ⑤ Shuba to share buyer decision framework + MAP templates in Slack.</div></div>
+    <div class="gap-row" style="grid-template-columns:140px 1fr;"><div class="gr">Actioned?</div><div class="gd" style="color:var(--red)">Not visible. No Slack evidence of Naga CFO outreach, LinkedIn CFO validation, or A-Line messaging. Sanket has been active on outbound (Hyperagent research on Planitar, HITRUST solution questions) and sales-ops hygiene (removing test deals). Consumer Direct still at DV1 six weeks after COO approval — the CFO risk identified in the review has not visibly been addressed.</div></div>
+  </div>
+
+  <!-- ── Coinspaid (Amit) ── -->
+  <div class="gap-card" style="margin-bottom:1.5rem">
+    <div class="gap-head">
+      <div class="gap-ht">Coinspaid · Amit Borges · $22,000</div>
+      <div class="gap-sub">Deal review May 20 · Shuba + Anirudh</div>
+    </div>
+    <div class="gap-row" style="grid-template-columns:140px 1fr;"><div class="gr">Deal status</div><div class="gd">S2 · $22K confirmed · decision call May 26 (today). 4-week POC completed, NDA executed, commercial proposal shared. Deal grew from $15K → $22K with zone switch for multi-entity compliance. ISO 27001 renewal + DORA compliance as dual need.</div></div>
+    <div class="gap-row" style="grid-template-columns:140px 1fr;"><div class="gr">Buyer stage analysis</div><div class="gd">Stages 1–2 (features/commercial) complete. Review flagged the deal is likely at Stage 3 (implementation/support) or Stage 4 (brand/credibility). Proactive outreach needed before the May 26 call — waiting a full week was flagged as too long.</div></div>
+    <div class="gap-row" style="grid-template-columns:140px 1fr;"><div class="gr">Actions agreed</div><div class="gd">① Customer reference calls before May 26. ② Partner introductions (blockchain/fintech relevance). ③ CFO connection explored. ④ Solutions engineer follow-up. ⑤ Consider leadership email from Shuba (shared name with CoinsPaid contact Anton).</div></div>
+    <div class="gap-row" style="grid-template-columns:140px 1fr;"><div class="gr">Actioned?</div><div class="gd" style="color:var(--amber)">Partially. Amit has been active on outbound (LP Solutions, Other Side at Work via Hyperagent) showing pipeline build intent. No Slack evidence of the specific Stage 3/4 actions — customer reference calls, CFO connection, or Shuba leadership email. Decision call is today — visibility on whether these were done before the call is low.</div></div>
+  </div>
+
+  <!-- ── Alation (Aravind) ── -->
+  <div class="gap-card" style="margin-bottom:1.5rem">
+    <div class="gap-head">
+      <div class="gap-ht">Alation (Aravind) · Not in current pipeline</div>
+      <div class="gap-sub">Deal review May 8 · Aravind + Anirudh · From Granola notes</div>
+    </div>
+    <div class="gap-row" style="grid-template-columns:140px 1fr;"><div class="gr">Deal overview</div><div class="gd">700 employees, $150–200M revenue. Switching from Hyperproof (poor support, implementation issues). Budget $30–50K. Hyperproof renewal due June. Decision maker: Divya (compliance lead, reports to CTO). 6 GRC stakeholders. List price $314K, proposed at $54.5K (45% discount).</div></div>
+    <div class="gap-row" style="grid-template-columns:140px 1fr;"><div class="gr">Key issues</div><div class="gd">Vendor count is the biggest pricing variable (200→400 vendors = major price jump). Jira active sync integration required. Pricing simplification needed — only vendor count meaningfully impacts price.</div></div>
+    <div class="gap-row" style="grid-template-columns:140px 1fr;"><div class="gr">Actions agreed</div><div class="gd">① Aravind to clarify vendor scoping with Iyengar (critical for final pricing). ② Simplify pricing message to vendor count only. ③ Prepare exec value prop deck. ④ Resolve Jira integration timeline with product. ⑤ Anchor price at $65K with flexibility on add-ons.</div></div>
+    <div class="gap-row" style="grid-template-columns:140px 1fr;"><div class="gr">Current status</div><div class="gd" style="color:var(--ink3)">Alation does not appear in the current Q2 pipeline export. Either the deal did not progress, was lost, or Aravind has not created it in HubSpot. Given Hyperproof renewal was due in June, this is time-sensitive — needs clarification from Aravind on what happened.</div></div>
+  </div>
+
+  <!-- ── Forecast call W3 actions ── -->
+  <div class="section-title">Forecast call (May 19) — actions and follow-through</div>
+  <div class="action-card">
+    <div class="action-head"><div class="action-ht">Actions from the May 19 forecast call and their status</div></div>
+    <div class="ac"><div class="ac-n">01</div><div class="ac-t"><strong>Aravind — update close dates on Strand Life Sciences, Internshala, Tribute Tech</strong> <span>· Strand closed May 25 ✓. Internshala date updated to May 31 ✓. Tribute Tech: not visible in May 26 export — may have been moved or lost.</span></div></div>
+    <div class="ac"><div class="ac-n">02</div><div class="ac-t"><strong>Amit — update Datajoy close date from Q1</strong> <span>· Datajoy not in the May 26 export at all. Likely closed lost or archived. No action taken.</span></div></div>
+    <div class="ac"><div class="ac-n">03</div><div class="ac-t"><strong>Amit — explain Papirfly N1 → S1 regression</strong> <span>· Still at S1 as of May 26. No explanation surfaced in Slack. This has now been unresolved for two weeks.</span></div></div>
+    <div class="ac"><div class="ac-n">04</div><div class="ac-t"><strong>Amit — Coinspaid decision call May 26</strong> <span>· Call is today. Stage-3/4 prep actions from the May 20 deal review not visibly completed beforehand.</span></div></div>
+    <div class="ac"><div class="ac-n">05</div><div class="ac-t"><strong>Monika — close PMC Commerce and Oleeo</strong> <span>· Both still open at S2. PMC slipped to Jun 20, Oleeo to Jun 12. Signatures not obtained despite contracts being out.</span></div></div>
+    <div class="ac"><div class="ac-n">06</div><div class="ac-t"><strong>Sanket — Consumer Direct next steps post-COO meeting</strong> <span>· Still at DV1. CFO risk actions (Naga outreach, LinkedIn validation) not evidenced. Deal has been at DV1 for six weeks.</span></div></div>
+    <div class="ac"><div class="ac-n">07</div><div class="ac-t"><strong>Aditya — close Beehive by May 29</strong> <span>· Beehive still at N1 as of May 26 export. Three days to close date — needs urgent push.</span></div></div>
+    <div class="ac"><div class="ac-n">08</div><div class="ac-t"><strong>All reps — pipeline hygiene (stalled deals to Nurture)</strong> <span>· Aditya's pipeline still shows Holmes, Zenith, AgadaBio and other LP/low-budget DVQ1 deals. Sanket requested two test deals removed from his pipeline via sales-ops (actioned ✓). Partial compliance overall.</span></div></div>
+  </div>
+
+  <div class="dash-footer"><span>Sprinto · Q2 FY26 · New Business Sales</span><span>Deal reviews: PMC Commerce · Consumer Direct · Coinspaid · Alation</span></div>
+</div>
+
+</div>
+<script>
+function showWeek(id,btn){
+  document.querySelectorAll('.week-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
